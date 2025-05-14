@@ -2,6 +2,13 @@
 @extends('layouts.adminlayout')
 
 @section('title', 'รายละเอียดโครงการ')
+<script src="https://cdn.jsdelivr.net/npm/flowbite@3.1.2/dist/flowbite.min.js"></script>
+
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-4Q6Gf2aSP4eDXB8Miphtr37CMZZQ5oXLH2yaXMJ2w8e2ZtHTl7GptT4jmndRuHDT" crossorigin="anonymous">
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-j1CDi7MgGQ12Z7Qab0qlWQ/Qqz24Gc6BM0thvEMVjHnfYGF0rmFCozFSxQBxwHKO" crossorigin="anonymous">
+</script>
 
 @section('content')
     <style>
@@ -499,57 +506,55 @@
             <div class="export-notice-content">
                 <div style="display: flex; justify-content: space-between; align-items: center;">
                     <h4><i class="fas fa-file-pdf"></i> Export ข้อมูลใบนำส่งโครงการเป็น PDF</h4>
-                    <button class="btn btn-success" style="padding: 6px 10px; font-size: 0.85rem;">
+                    <a class="btn btn-success" style="padding: 6px 10px; font-size: 0.85rem;"
+                        href="{{ route('navigatePage', ['id' => $id, 'type' => $type]) }}" target="_blank">
                         <i class="fas fa-file-pdf"></i> Export
-                    </button>
+                    </a>
                 </div>
                 <p>คุณสามารถ Export ข้อมูลที่กรอกในส่วนนี้ เป็นไฟล์ PDF ได้</p>
             </div>
         </div>
-        <h3 class="section-title">
-            <i class="fas fa-calendar-alt"></i> แผนปีที่ผ่านมา
-        </h3>
-        <div class="form-grid">
-            <div class="form-group">
-                <label for="project-name">เป้าหมาย</label>
-                <input type="text" id="project-name" class="form-control" placeholder="ระบุชื่อโครงการ">
+        <form action="{{ route('saveDataPageOnes', ['type' => $type, 'group' => $group]) }}" method="POST">
+            @csrf
+            <h3 class="section-title">
+                <i class="fas fa-calendar-alt"></i> จำนวนสมาชิกสถาบันฯ ทั้งหมด(คน)
+            </h3>
+            <div class="form-grid">
+                <div class="form-group">
+                    <label for="project-name">จำนวน(คน)</label>
+                    <input type="number" value="{{ $data_value_page_one->count_one ?? '' }}" name="count_one" required
+                        class="form-control" placeholder="ระบุชื่อโครงการ">
+                </div>
+
             </div>
-            <div class="form-group">
-                <label for="project-year">งบประมาณ</label>
-                <input type="text" id="project-year" class="form-control" placeholder="ระบุปีงบประมาณ">
+            <h3 class="section-title">
+                <i class="fas fa-calendar-alt"></i> เกษตรกรที่ขึ้นทะเบียนกับ กยท. ทั้งหมด(คน)
+            </h3>
+            <div class="form-grid">
+                <div class="form-group">
+                    <label for="project-name">จำนวนคน</label>
+                    <input type="number" value="{{ $data_value_page_one->count_two ?? '' }}" name="count_two" required
+                        class="form-control" placeholder="ระบุชื่อโครงการ">
+                </div>
+
             </div>
-        </div>
-        <h3 class="section-title">
-            <i class="fas fa-calendar-alt"></i> ผลการดำเนินงาน
-        </h3>
-        <div class="form-grid">
-            <div class="form-group">
-                <label for="project-name">เป้าหมาย</label>
-                <input type="text" id="project-name" class="form-control" placeholder="ระบุชื่อโครงการ">
+            <h3 class="section-title">
+                <i class="fas fa-calendar-alt"></i> ระยะเวลาในการดำเนินโครงการ
+            </h3>
+            <div class="form-grid">
+                <div class="form-group">
+                    <label for="project-name">ระยะเวลา(วัน)</label>
+                    <input type="number" value="{{ $data_value_page_one->time ?? '' }}" name="time" required
+                        class="form-control" placeholder="ระบุชื่อโครงการ">
+                </div>
+
             </div>
-            <div class="form-group">
-                <label for="project-year">งบประมาณ</label>
-                <input type="text" id="project-year" class="form-control" placeholder="ระบุปีงบประมาณ">
+            <div class="button-group">
+                <button class="btn btn-primary" type="submit">
+                    <i class="fas fa-check"></i> บันทึกข้อมูล
+                </button>
             </div>
-        </div>
-        <h3 class="section-title">
-            <i class="fas fa-calendar-alt"></i> คำขอตั้งงบประมาณปีนี้ ๒๕๖๙
-        </h3>
-        <div class="form-grid">
-            <div class="form-group">
-                <label for="project-name">เป้าหมาย</label>
-                <input type="text" id="project-name" class="form-control" placeholder="ระบุชื่อโครงการ">
-            </div>
-            <div class="form-group">
-                <label for="project-year">งบประมาณ</label>
-                <input type="text" id="project-year" class="form-control" placeholder="ระบุปีงบประมาณ">
-            </div>
-        </div>
-        <div class="button-group">
-            <button class="btn btn-primary">
-                <i class="fas fa-check"></i> บันทึกข้อมูล
-            </button>
-        </div>
+        </form>
         {{-- <div class="export-notice" style="margin-top: 20px;">
             <div class="export-notice-icon">
                 <i class="fas fa-info-circle"></i>
@@ -592,177 +597,8 @@
                 </button>
             </div>
         </div> --}}
-        <div class="upload-area" id="dropArea">
-            <div class="upload-icon">
-                <i class="fas fa-file-upload"></i>
-            </div>
-            <div class="upload-text">
-                <h3>ลากไฟล์มาวางที่นี่ หรือคลิกเพื่อเลือกไฟล์</h3>
-                <p>รองรับเฉพาะไฟล์ PDF เท่านั้น ขนาดไฟล์สูงสุด 10 MB</p>
-                <button type="button" class="upload-btn" id="updateFileBtn">
-                    <i class="fas fa-upload"></i> อัปเดตไฟล์
-                </button>
-                <input type="file" name="upload_file_page_one" id="upload_file_page_one" accept="application/pdf"
-                    style="display: none;">
-            </div>
-            <span id="file-name-display">ยังไม่มีไฟล์แนบ</span>
-        </div>
-        <div class="action-buttons mt-2" style="display: flex;justify-content: center;gap: 10px;">
-            <button class="btn btn-warning btn-sm" disabled id="save-upload-1">
-                <i class="fas fa-save"></i> บันทึกการเปลี่ยนแปลง
-            </button>
-            <button class="btn btn-warning btn-sm" disabled id="cancel-upload-1">
-                <i class="fas fa-times"></i> ยกเลิก
-            </button>
-            <button class="btn btn-info btn-sm" disabled id="download-file-1">
-                <i class="fas fa-download"></i> ดาวน์โหลด
-            </button>
-            <button class="btn btn-danger btn-sm" disabled id="delete-file-1">
-                <i class="fas fa-trash-alt"></i> ลบไฟล์
-            </button>
-        </div>
-
-        <script>
-            const updateFileBtn = document.getElementById('updateFileBtn');
-            const upload_file_page_one = document.querySelector('input[name="upload_file_page_one"]');
-            const fileNameDisplay = document.getElementById('file-name-display');
-            const saveUpload1 = document.getElementById('save-upload-1');
-            const cancelUpload1 = document.getElementById('cancel-upload-1');
-            const downloadFile1 = document.getElementById('download-file-1');
-            const deleteFile1 = document.getElementById('delete-file-1');
-            const maxFileSizeMB = 10;
-            const maxSizeBytes = maxFileSizeMB * 1024 * 1024;
-
-            document.addEventListener('DOMContentLoaded', function() {
-                // ปิดใช้งานปุ่ม "บันทึกการเปลี่ยนแปลง" ในตอนเริ่มต้น
-                saveUpload1.disabled = true;
-
-                if (updateFileBtn && upload_file_page_one) {
-                    updateFileBtn.addEventListener('click', function() {
-                        upload_file_page_one.click();
-                    });
-                }
-
-                upload_file_page_one.addEventListener('change', function() {
-                    if (this.files.length > 0) {
-                        const selectedFile = this.files[0];
-                        if (selectedFile.size > maxSizeBytes) {
-                            alert('ขนาดไฟล์ต้องไม่เกิน ' + maxFileSizeMB + ' MB');
-                            this.value = '';
-                            fileNameDisplay.textContent = 'ยังไม่มีไฟล์แนบ';
-                            downloadFile1.disabled = true;
-                            deleteFile1.disabled = true;
-                            return;
-                        }
-
-                        fileNameDisplay.textContent = selectedFile.name;
-                        cancelUpload1.disabled = false; // เปิดใช้งานปุ่มยกเลิกเมื่อมีการเลือกไฟล์
-                        saveUpload1.disabled = false; // เปิดใช้งานปุ่มบันทึกเมื่อมีการเลือกไฟล์
-                    } else {
-                        fileNameDisplay.textContent = 'ยังไม่มีไฟล์แนบ';
-                        cancelUpload1.disabled = true; // ปิดใช้งานปุ่มยกเลิกถ้าไม่มีไฟล์เลือก
-                        saveUpload1.disabled = true; // ปิดใช้งานปุ่มบันทึกถ้าไม่มีไฟล์เลือก
-                        downloadFile1.disabled = true;
-                        deleteFile1.disabled = true;
-                    }
-                });
-
-                cancelUpload1.addEventListener('click', function() {
-                    upload_file_page_one.value = '';
-                    fileNameDisplay.textContent = 'ยังไม่มีไฟล์แนบ';
-                    cancelUpload1.disabled = true;
-                    saveUpload1.disabled = true;
-                    downloadFile1.disabled = true;
-                    deleteFile1.disabled = true;
-                });
-
-                saveUpload1.addEventListener('click', function() {
-                    if (upload_file_page_one.files.length > 0) {
-                        alert('จำลองการบันทึกไฟล์: ' + upload_file_page_one.files[0].name);
-                        downloadFile1.disabled = false;
-                        deleteFile1.disabled = false;
-                        cancelUpload1.disabled = true; // ปิดปุ่มยกเลิกหลังบันทึก
-                    } else {
-                        alert('กรุณาเลือกไฟล์ก่อนบันทึก');
-                    }
-                });
-
-                downloadFile1.addEventListener('click', function() {
-                    alert('จำลองการดาวน์โหลดไฟล์');
-                });
-
-                deleteFile1.addEventListener('click', function() {
-                    alert('จำลองการลบไฟล์');
-                    fileNameDisplay.textContent = 'ยังไม่มีไฟล์แนบ';
-                    downloadFile1.disabled = true;
-                    deleteFile1.disabled = true;
-                });
-            });
-        </script>
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-        <script>
-            document.addEventListener('DOMContentLoaded', function() {
-                const uploadFile1 = document.getElementById('upload-file-1');
-                const fileName1 = document.getElementById('file-name-1');
-                const saveUpload1 = document.getElementById('save-upload-1');
-                const cancelUpload1 = document.getElementById('cancel-upload-1');
-                const downloadFile1 = document.getElementById('download-file-1');
-                const deleteFile1 = document.getElementById('delete-file-1'); // ยังคงเก็บ element ไว้
-                const uploadLabel1 = document.querySelector('label[for="upload-file-1"]');
-
-                uploadFile1.addEventListener('change', function() {
-                    if (this.files.length > 0) {
-                        fileName1.textContent = this.files[0].name;
-                        saveUpload1.disabled = false;
-                        cancelUpload1.disabled = false;
-                    } else {
-                        fileName1.textContent = 'ยังไม่มีไฟล์แนบ';
-                        saveUpload1.disabled = true;
-                        cancelUpload1.disabled = true;
-                    }
-                    // ในความเป็นจริง คุณอาจจะต้องตรวจสอบประเภทและขนาดไฟล์ที่นี่
-                });
-
-                cancelUpload1.addEventListener('click', function() {
-                    uploadFile1.value = ''; // เคลียร์การเลือกไฟล์
-                    fileName1.textContent = 'ยังไม่มีไฟล์แนบ';
-                    saveUpload1.disabled = true;
-                    cancelUpload1.disabled = true;
-                    // อาจจะต้องมี logic เพิ่มเติมในการคืนค่า UI ถ้ามีการแสดงปุ่มดาวน์โหลด/ลบก่อนหน้านี้
-                });
-
-                saveUpload1.addEventListener('click', function() {
-                    // Logic สำหรับการบันทึกไฟล์ที่อัปโหลดไปยังเซิร์ฟเวอร์
-                    alert('จำลองการบันทึกไฟล์: ' + uploadFile1.files[0].name);
-                    // หลังจากบันทึกสำเร็จ (สมมติว่าสำเร็จ) ให้เปิดใช้งานปุ่มดาวน์โหลดและลบ
-                    downloadFile1.disabled = false;
-                    deleteFile1.disabled = false;
-                    // ปิดใช้งานปุ่มบันทึกและยกเลิก
-                    saveUpload1.disabled = true;
-                    cancelUpload1.disabled = true;
-                });
-
-                downloadFile1.addEventListener('click', function() {
-                    // Logic สำหรับการดาวน์โหลดไฟล์ (อาจจะเป็นการเปิด URL ของไฟล์)
-                    alert('จำลองการดาวน์โหลดไฟล์');
-                });
-
-                // ส่วนของ deleteFile1 ถูกลบออกแล้ว
-            });
-        </script>
     </div>
 
     <!-- เนื้อหาแท็บที่ 2 -->
@@ -780,6 +616,159 @@
             </div>
         </div>
 
+        <form action="{{ route('upFileReTwo', ['id' => $id, 'type' => $type]) }}" method="POST"
+            enctype="multipart/form-data">
+            @csrf
+            <div class="upload-area" id="dropArea">
+                <div class="upload-icon">
+                    <i class="fas fa-file-upload"></i>
+                </div>
+                <div class="upload-text">
+                    <h3>ลากไฟล์มาวางที่นี่ หรือคลิกเพื่อเลือกไฟล์</h3>
+                    <p>รองรับเฉพาะไฟล์ PDF เท่านั้น ขนาดไฟล์สูงสุด 10 MB</p>
+                    <button type="button" class="upload-btn" id="updateFileBtn">
+                        <i class="fas fa-upload"></i> อัปเดตไฟล์
+                    </button>
+                    <input type="file" name="upload_file_page_two" id="upload_file_page_two" accept="application/pdf"
+                        style="display: none;">
+                </div>
+                <span id="file-name-display">ยังไม่มีไฟล์แนบ</span>
+            </div>
+            <div class="action-buttons mt-2" style="display: flex;justify-content: center;gap: 10px;">
+                <button class="btn btn-warning btn-sm" disabled id="save-upload-1" type="submit">
+                    <i class="fas fa-save"></i> บันทึกการเปลี่ยนแปลง
+                </button>
+                <button class="btn btn-warning btn-sm" disabled id="cancel-upload-1">
+                    <i class="fas fa-times"></i> ยกเลิก
+                </button>
+
+                @if (isset($data) && $data)
+                    <a href="{{ route('TwoDownload.pdf', ['id' => $id, 'type' => $type]) }}" class="btn btn-info btn-sm"
+                        disabled id="download-file-1">
+                        <i class="fas fa-download"></i> ดาวน์โหลด
+                    </a>
+                @else
+                    <button class="btn btn-info btn-sm" disabled id="download-file-1">
+                        <i class="fas fa-download"></i> ดาวน์โหลด
+                    </button>
+                @endif
+
+                <button class="btn btn-danger btn-sm" disabled id="delete-file-1" type="button" data-bs-toggle="modal"
+                    data-bs-target="#staticBackdrop">
+                    <i class="fas fa-trash-alt"></i> ลบไฟล์
+                </button>
+            </div>
+        </form>
+        {{-- ลบข้อมูลmodal --}}
+        <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+            aria-labelledby="staticBackdropLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h1 class="modal-title fs-5" id="staticBackdropLabel">ลบไฟล์</h1>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        คุณต้องการลบไฟล์นี้ใช่หรือไม่?
+                    </div>
+                    <form action="{{ route('reReTwo', ['id' => $id, 'type' => $type]) }}" method="POST">
+                        @csrf
+                        @method('DELETE')
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">ยกเลิก</button>
+                            <button type="submit" class="btn btn-primary">ยืนยัน</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+
+        <script>
+            const updateFileBtn = document.getElementById('updateFileBtn');
+            const upload_file_page_two = document.querySelector('input[name="upload_file_page_two"]');
+            const fileNameDisplay = document.getElementById('file-name-display');
+            const saveUpload1 = document.getElementById('save-upload-1');
+            const cancelUpload1 = document.getElementById('cancel-upload-1');
+            const downloadFile1 = document.getElementById('download-file-1');
+            const deleteFile1 = document.getElementById('delete-file-1');
+            const maxFileSizeMB = 10;
+            const maxSizeBytes = maxFileSizeMB * 1024 * 1024;
+
+            // ค่าที่ส่งมาจาก backend
+            const originalHasFile = @json($hasFile);
+            const originalFileName = @json($fileName);
+
+            document.addEventListener('DOMContentLoaded', function() {
+                // แสดงชื่อไฟล์เดิมถ้ามี
+                if (originalHasFile && originalFileName) {
+                    fileNameDisplay.textContent = originalFileName;
+                    downloadFile1.disabled = false;
+                    deleteFile1.disabled = false;
+                } else {
+                    fileNameDisplay.textContent = 'ยังไม่มีไฟล์แนบ';
+                    downloadFile1.disabled = true;
+                    deleteFile1.disabled = true;
+                }
+
+                saveUpload1.disabled = true;
+                cancelUpload1.disabled = true;
+
+                // คลิกปุ่มอัปเดตไฟล์เพื่อเปิดเลือกไฟล์
+                updateFileBtn.addEventListener('click', function() {
+                    upload_file_page_two.click();
+                });
+
+                // เมื่อเลือกไฟล์ใหม่
+                upload_file_page_two.addEventListener('change', function() {
+                    if (this.files.length > 0) {
+                        const selectedFile = this.files[0];
+
+                        if (selectedFile.size > maxSizeBytes) {
+                            alert('ขนาดไฟล์ต้องไม่เกิน ' + maxFileSizeMB + ' MB');
+                            this.value = '';
+                            fileNameDisplay.textContent = originalHasFile && originalFileName ?
+                                originalFileName : 'ยังไม่มีไฟล์แนบ';
+                            downloadFile1.disabled = !originalHasFile;
+                            deleteFile1.disabled = !originalHasFile;
+                            saveUpload1.disabled = true;
+                            cancelUpload1.disabled = true;
+                            return;
+                        }
+
+                        // แสดงชื่อไฟล์ใหม่
+                        fileNameDisplay.textContent = selectedFile.name;
+                        saveUpload1.disabled = false;
+                        cancelUpload1.disabled = false;
+
+                        // ปิดปุ่มดาวน์โหลด/ลบ เพราะยังไม่ใช่ไฟล์จริง
+                        downloadFile1.disabled = true;
+                        deleteFile1.disabled = true;
+                    } else {
+                        // ไม่ได้เลือกไฟล์ใหม่
+                        fileNameDisplay.textContent = originalHasFile && originalFileName ? originalFileName :
+                            'ยังไม่มีไฟล์แนบ';
+                        downloadFile1.disabled = !originalHasFile;
+                        deleteFile1.disabled = !originalHasFile;
+                        saveUpload1.disabled = true;
+                        cancelUpload1.disabled = true;
+                    }
+                });
+
+                // เมื่อกดปุ่ม "ยกเลิก"
+                cancelUpload1.addEventListener('click', function() {
+                    upload_file_page_two.value = '';
+                    fileNameDisplay.textContent = originalHasFile && originalFileName ? originalFileName :
+                        'ยังไม่มีไฟล์แนบ';
+                    downloadFile1.disabled = !originalHasFile;
+                    deleteFile1.disabled = !originalHasFile;
+                    saveUpload1.disabled = true;
+                    cancelUpload1.disabled = true;
+                });
+
+
+            });
+        </script>
 
 
         {{-- <div class="form-grid">
@@ -809,11 +798,7 @@
             </div>
         </div> --}}
 
-        <div class="button-group">
-            <button class="btn btn-primary">
-                <i class="fas fa-check"></i> บันทึกข้อมูล
-            </button>
-        </div>
+
     </div>
 
     <!-- เนื้อหาแท็บที่ 3 -->

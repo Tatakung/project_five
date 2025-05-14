@@ -23,8 +23,6 @@ Route::get('/', function () {
 });
 
 
-
-
 Route::middleware(['auth', 'admin'])->group(function () {
     Route::get('/manage/institution', [AdminController::class, 'totalAdmin'])->name('admin.dashboard');
     Route::get('/manage/institution/{id}/member', [AdminController::class, 'manageMember'])->name('manageMember');
@@ -43,6 +41,9 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/manage-project/{id}/{type}/detail-sum-region.php', [RegionController::class, 'projectOneRegion'])->name('projectOneRegion');
     Route::post('/manage-project/{type}/detail-sum-region/{group}', [RegionController::class, 'saveDataPageThrees'])->name('saveDataPageThrees');
     Route::post('/manage-project/{type}/detail-sum-region-four/{group}', [RegionController::class, 'saveDataPageFours'])->name('saveDataPageFours');
+    Route::post('/manage-project/{type}/detail-sum-region-one/{group}', [RegionController::class, 'saveDataPageOnes'])->name('saveDataPageOnes');
+
+
     // เพิ่มแก้ไขไฟล์ในระดับกลุ่ม
     Route::get('/types/{user}/{type}/upload-file', [UserController::class, 'create'])->name('upload-file.create');
     Route::post('/typemed/{user}/{type}/upload-file', [UserController::class, 'saveCreateFile'])->name('saveCreateFile');
@@ -52,14 +53,19 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/view-pdf/{id}', [UserController::class, 'viewPdf'])->name('view.pdf');
     Route::get('/download-pdf/{id}', [UserController::class, 'downloadPdf'])->name('download.pdf');
     // เปิด pdf ในระดับ กลุ่ม
-    Route::get('/manage-project/show-type-pdf-one', [PdfController::class, 'showtypepdfone'])->name('showtypepdfone');
+    Route::get('/manage-project/show-type-pdf-one/{id}.pdf', [PdfController::class, 'showtypepdfone'])->name('showtypepdfone');
+    Route::get('/manage-project/name-members/{id}.pdf', [PdfController::class, 'showtboard'])->name('showtboard');
     Route::get('/manage-project/ngb-one', [PdfController::class, 'ngbOne'])->name('ngbOne');
-    Route::get('/manage-project/ngb-three', [PdfController::class, 'ngbThree'])->name('ngbThree');
-    Route::get('/manage-project/navigate-page', [PdfController::class, 'navigatePage'])->name('navigatePage');
-
+    Route::get('/manage-project/ngb-three/{id}.pdf', [PdfController::class, 'ngbThree'])->name('ngbThree');
+    Route::get('/manage-project/navigate-page/{id}/{type}.pdf', [PdfController::class, 'navigatePage'])->name('navigatePage');
     Route::get('/manage-project/monny-one-page/{id}/{type}.pdf', [PdfController::class, 'monnyOnePage'])->name('monnyOnePage');
-
     Route::get('/manage-project/monny-two-page/{id}/{type}.pdf', [PdfController::class, 'monnyTwoPage'])->name('monnyTwoPage');
+
+
+    // อัปโหลดregion
+    Route::post('/manage-project/{id}/{type}upload-file-region-two', [RegionController::class, 'upFileReTwo'])->name('upFileReTwo');
+    Route::delete('/manage-project/{id}/{type}/upload-fileremove-region-two', [RegionController::class, 'reReTwo'])->name('reReTwo');
+    Route::get('/manage-project/{id}/{type}/download-region-two', [RegionController::class, 'TwoDownload'])->name('TwoDownload.pdf');
 });
 
 Route::get('/admin/register-user', [AdminUserController::class, 'showRegisterForm'])->name('admin.register.form');

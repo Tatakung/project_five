@@ -11,14 +11,18 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('deliveries', function (Blueprint $table) {
+        Schema::create('infos', function (Blueprint $table) {
             $table->uuid('id')->primary(); // เปลี่ยนจาก $table->id() เป็น uuid
             $table->uuid('user_id');
             $table->integer('type')->nullable();
-            $table->integer('count_one')->nullable(); //จำนวนสมาชิกในสถาบันทั้งหมด
-            $table->integer('count_two')->nullable(); //เกษตรกรทั้งหมดที่ขึ้นทะเบียนกับ กยท.
-            $table->integer('time')->nullable(); // ระบะเวลาในการดำเนินงาน
-            
+            $table->text('one')->nullable(); // หลักการและเหตุผล
+            $table->text('two')->nullable(); // วัตถุประสงค์
+            $table->text('three')->nullable(); // ขั้นตอน
+            $table->text('four')->nullable(); // ระยะเวลา
+            $table->text('five')->nullable(); // งบประมาณ
+            $table->text('six')->nullable(); // สถานที่
+            $table->text('seven')->nullable(); // ผลที่คาด
+            $table->text('eight')->nullable(); // ข้อเสนอแนะ
             $table->string('file_path')->nullable();
             $table->timestamps();
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
@@ -30,6 +34,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('deliveries');
+        Schema::dropIfExists('infos');
     }
 };

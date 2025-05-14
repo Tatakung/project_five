@@ -1,19 +1,18 @@
 <!-- resources/views/projects.blade.php -->
 @extends('layouts.adminlayout')
-
 @section('title', 'โครงการ')
-
 @section('content')
     <style>
         /* Styles เฉพาะของหน้า Projects */
         .project-cards {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
             gap: 20px;
             margin-bottom: 40px;
         }
 
         .card {
+            /* CSS เดิมของคุณ */
             background-color: white;
             border-radius: 10px;
             padding: 20px;
@@ -21,6 +20,16 @@
             transition: transform 0.3s, box-shadow 0.3s;
             cursor: pointer;
             text-align: center;
+
+            /* เพิ่ม CSS นี้เข้าไป */
+            min-height: 200px;
+            /* ปรับค่าความสูงตามที่คุณต้องการ */
+            display: flex;
+            /* เพิ่มเพื่อให้จัดเรียงเนื้อหาภายในได้ */
+            flex-direction: column;
+            /* จัดเรียงเนื้อหาภายในเป็นแนวตั้ง */
+            justify-content: space-between;
+            /* จัดช่องว่างระหว่าง icon, h3, และ p */
         }
 
         .card:hover {
@@ -35,99 +44,136 @@
         }
 
         .card h3 {
+            /* CSS เดิมของคุณ */
             font-size: 1.1rem;
             margin-bottom: 10px;
             color: #2c3e50;
         }
 
         .card p {
+            /* CSS เดิมของคุณ */
             font-size: 0.9rem;
             color: #7f8c8d;
+            margin-top: auto;
+            /* จัดให้ p ชิดด้านล่าง (ถ้าต้องการ) */
         }
 
+        /* สิ้นสุด */
+
         .documents-section {
-            background-color: white;
-            border-radius: 10px;
-            padding: 25px;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+            background-color: #fff;
+            border-radius: 15px;
+            padding: 35px;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+            margin-bottom: 50px;
         }
 
         .documents-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 20px;
+            margin-bottom: 30px;
+        }
+
+        .documents-header h3 {
+            font-size: 20px;
+            /* ปรับขนาดเป็น 20px */
+            color: #2d3748;
+            margin: 0;
+            font-weight: 600;
         }
 
         .documents-table {
             width: 100%;
             border-collapse: collapse;
+            border-radius: 10px;
+            overflow: hidden;
         }
 
-        .documents-table th {
-            background-color: #f8f9fa;
-            padding: 12px 15px;
+        .documents-table thead th {
+            background-color: #4299e1;
+            color: #fff;
+            padding: 18px 20px;
             text-align: left;
-            font-weight: 500;
-            color: #666;
-            border-bottom: 1px solid #e0e0e0;
+            font-weight: 700;
+            border-bottom: 2px solid #66a7e8;
+            font-size: 15px;
+            /* ปรับขนาดเป็น 20px */
+        }
+
+        .documents-table tbody tr {
+            background-color: #f7fafc;
+            transition: background-color 0.3s ease;
+        }
+
+        .documents-table tbody tr:nth-child(even) {
+            background-color: #edf2f7;
+        }
+
+        .documents-table tbody tr:hover {
+            background-color: #d1d8e0;
         }
 
         .documents-table td {
-            padding: 12px 15px;
-            border-bottom: 1px solid #e0e0e0;
+            padding: 15px 20px;
+            border-bottom: 1px solid #e2e8f0;
+            color: #4a5568;
+            font-size: 1rem;
+            /* คงขนาดเดิมไว้ */
         }
 
         .status {
-            padding: 4px 10px;
-            border-radius: 50px;
-            font-size: 0.8rem;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 1rem;
             display: inline-block;
+            font-weight: 600;
         }
 
         .status-done {
-            background-color: #e3f9e5;
-            color: #27ae60;
+            background-color: #a7f3d0;
+            color: #1a7e50;
         }
 
         .status-pending {
-            background-color: #fff3e0;
-            color: #f39c12;
+            background-color: #fefcbf;
+            color: #92400e;
         }
 
         .action-buttons {
             display: flex;
-            gap: 10px;
+            gap: 15px;
+            justify-content: center;
         }
 
         .btn-icon {
-            width: 30px;
-            height: 30px;
+            width: 40px;
+            height: 40px;
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
             border: none;
             cursor: pointer;
-            transition: all 0.3s;
+            transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+            font-size: 1.2rem;
+            opacity: 0.8;
         }
 
         .btn-view {
-            background-color: #e3f2fd;
-            color: #2196f3;
+            background-color: #dbeafe;
+            color: #1e40af;
         }
 
         .btn-print {
-            background-color: #e8f5e9;
-            color: #4caf50;
+            background-color: #b2f5ea;
+            color: #059669;
         }
 
-        .btn-view:hover {
-            background-color: #bbdefb;
-        }
-
-        .btn-print:hover {
-            background-color: #c8e6c9;
+        .btn-icon:hover {
+            transform: scale(1.1);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            opacity: 1;
         }
 
         .no-documents {
@@ -157,24 +203,72 @@
                 font-weight: bold;
                 flex: 1;
                 text-align: left;
+                margin-right: 10px;
             }
 
             .documents-table tbody tr {
                 display: block;
                 margin-bottom: 15px;
-                border-bottom: 1px solid #e0e0e0;
+                border-bottom: 1px solid #e2e8f0;
+                padding-bottom: 10px;
             }
+
+            .action-buttons {
+                justify-content: flex-end;
+                gap: 10px;
+            }
+
+            .btn-icon {
+                width: 35px;
+                height: 35px;
+                font-size: 1rem;
+            }
+
+        }
+
+        .group-info-container {
+            background-color: #ffffff;
+            /* สีพื้นหลังขาวสะอาด */
+            color: #1a237e !important;
+            /* สีตัวอักษรน้ำเงินเข้ม */
+            padding: 16px 20px;
+            border-radius: 8px;
+            margin-bottom: 25px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            /* เงาบางๆ ดูดี */
+            border-left: 6px solid #3f51b5;
+            /* แถบสีน้ำเงินหลัก */
+        }
+
+        .group-info-text {
+            text-decoration: none !important;
+            font-size: 1.3rem;
+            /* ขนาดตัวอักษรที่อ่านง่าย */
+            font-weight: 500;
+            /* ความหนาปานกลาง */
+            display: flex;
+            align-items: center;
+        }
+
+        .group-info-icon {
+            color: #3f51b5 !important;
+            /* สีไอคอนเดียวกับแถบข้าง */
+            margin-right: 12px;
+            font-size: 1.6rem;
         }
     </style>
-
-
-
-
-    <div>
-        <p style="color: #051f3f ; text-decoration: underline;"><i class="fa-solid fa-house-user" style="color: #3498db;"></i>
-            กลุ่มเกษตรกรชาวสวนยางบ้านแฮด
+    {{-- <div class="group-info-container">
+        <p class="group-info-text">
+            <i class="fa-solid fa-house-user group-info-icon"></i>
+            {{ $foundGroup['name' ?? ''] }}
         </p>
-    </div>
+    </div> --}}
+
+    {{-- <div class="group-info-container">
+        <p style="color: #051f3f ; text-decoration: underline;"><i class="fa-solid fa-house-user" style="color: #3498db;"></i>
+            {{ $foundGroup['name' ?? ''] }}
+        </p>
+    </div> --}}
 
     <h2 class="section-title" style="font-size: 20px;"><i class="fa-solid fa-folder-open"></i> ประเภทโครงการ</h2>
     <div class="project-cards">
@@ -185,9 +279,9 @@
                 <div class="card-icon">
                     <i class="fas fa-calendar-check"></i>
                 </div>
-                <h3>type:1.โครงการใหญ่ประจำปี</h3>
+                <h3>โครงการใหญ่ประจำปี</h3>
                 <p>จัดการข้อมูลโครงการหลักประจำปี</p>
-                <p>ส่งtype1กับgroup</p>
+
             </div>
         </a>
 
@@ -198,9 +292,9 @@
                 <div class="card-icon">
                     <i class="fas fa-users"></i>
                 </div>
-                <h3>type:2.โครงการสัมมนา</h3>
+                <h3>โครงการสัมมนา</h3>
                 <p>จัดการข้อมูลการสัมมนา</p>
-                <p>ส่งtype2กับgroup</p>
+
             </div>
 
         </a>
@@ -212,9 +306,9 @@
                 <div class="card-icon">
                     <i class="fas fa-chalkboard-teacher"></i>
                 </div>
-                <h3>type:3.โครงการฝึกอบรม</h3>
+                <h3>โครงการฝึกอบรม</h3>
                 <p>จัดการข้อมูลการฝึกอบรม</p>
-                <p>ส่งtype3กับgroup</p>
+
             </div>
         </a>
 
@@ -224,9 +318,9 @@
                 <div class="card-icon">
                     <i class="fas fa-building"></i>
                 </div>
-                <h3>type:4.โครงการศึกษาดูงาน</h3>
+                <h3>โครงการศึกษาดูงาน</h3>
                 <p>จัดการข้อมูลการศึกษาดูงาน</p>
-                <p>ส่งtype4กับgroup</p>
+
             </div>
         </a>
 
@@ -238,9 +332,9 @@
                 <div class="card-icon">
                     <i class="fas fa-chart-line"></i>
                 </div>
-                <h3>type:5.โครงการส่งเสริมศักยภาพ</h3>
+                <h3>โครงการส่งเสริมศักยภาพ</h3>
                 <p>จัดการข้อมูลส่งเสริมศักยภาพ</p>
-                <p>ส่งtype5กับgroup</p>
+
             </div>
         </a>
 
@@ -264,20 +358,21 @@
             </thead>
             <tbody>
                 <tr>
-                    <td data-label="ชื่อเอกสาร"><i class="fa-solid fa-file-pdf"></i> หน้าแรก . pdf</td>
+                    <td data-label="ชื่อเอกสาร"><i class="fa-solid fa-file-pdf"></i> ขอรับเงินสนับสนุน</td>
                     {{-- <td data-label="ขนาดไฟล์">user_id,1</td>
                     <td data-label="วันที่อัปโหลด">05/08/2025</td>
                     <td data-label="สถานะ"><span class="status status-done">อัปโหลดแล้ว</span></td> --}}
                     <td data-label="จัดการ">
                         <div class="action-buttons">
-                            <a class="btn-icon btn-view" href="{{ route('showtypepdfone') }}"><i class="fas fa-eye"></i></a>
+                            <a class="btn-icon btn-view" href="{{ route('showtypepdfone', ['id' => $user]) }}"><i
+                                    class="fas fa-eye"></i></a>
                             <button class="btn-icon btn-print"><i class="fas fa-print"></i></button>
                         </div>
                     </td>
                 </tr>
                 <tr>
 
-                    <td data-label="ชื่อเอกสาร"><i class="fa-solid fa-file-pdf"></i> งสบ1</td>
+                    <td data-label="ชื่อเอกสาร"><i class="fa-solid fa-file-pdf"></i> งสบ.๑</td>
                     {{-- <td data-label="ขนาดไฟล์">user_id,1</td>
                     <td data-label="วันที่อัปโหลด">05/08/2025</td>
                     <td data-label="สถานะ"><span class="status status-done">อัปโหลดแล้ว</span></td> --}}
@@ -289,46 +384,23 @@
                     </td>
                 </tr>
                 <tr>
-                    <td data-label="ชื่อเอกสาร"><i class="fa-solid fa-file-pdf"></i> งสบ3</td>
+                    <td data-label="ชื่อเอกสาร"><i class="fa-solid fa-file-pdf"></i> งสบ. ๓</td>
                     <td data-label="จัดการ">
                         <div class="action-buttons">
-                            <a class="btn-icon btn-view" href="{{ route('ngbThree') }}"><i class="fas fa-eye"></i></a>
+                            <a class="btn-icon btn-view" href="{{ route('ngbThree', ['id' => $user]) }}"><i
+                                    class="fas fa-eye"></i></a>
                             <button class="btn-icon btn-print"><i class="fas fa-print"></i></button>
                         </div>
                     </td>
                 </tr>
-                <tr>
-                    <td data-label="ชื่อเอกสาร"><i class="fa-solid fa-file-pdf"></i> ใบนำส่งโครงการ</td>
-                    <td data-label="จัดการ">
-                        <div class="action-buttons">
-                            <a class="btn-icon btn-view" href="{{ route('navigatePage') }}"><i class="fas fa-eye"></i></a>
-                            <button class="btn-icon btn-print"><i class="fas fa-print"></i></button>
-                        </div>
-                    </td>
-                </tr>
-                <tr>
-                    <td data-label="ชื่อเอกสาร"><i class="fa-solid fa-file-pdf"></i> เงิน 1 </td>
-                    <td data-label="จัดการ">
-                        <div class="action-buttons">
-                            <a class="btn-icon btn-view" href=""><i class="fas fa-eye"></i></a>
-                            <button class="btn-icon btn-print"><i class="fas fa-print"></i></button>
-                        </div>
-                    </td>
-                </tr>
-                <tr>
-                    <td data-label="ชื่อเอกสาร"><i class="fa-solid fa-file-pdf"></i> เงิน 2 </td>
-                    <td data-label="จัดการ">
-                        <div class="action-buttons">
-                            <a class="btn-icon btn-view" href=""><i class="fas fa-eye"></i></a>
-                            <button class="btn-icon btn-print"><i class="fas fa-print"></i></button>
-                        </div>
-                    </td>
-                </tr>
+
+
                 <tr>
                     <td data-label="ชื่อเอกสาร"><i class="fa-solid fa-file-pdf"></i> รายชื่อคณะกรรมการ </td>
                     <td data-label="จัดการ">
                         <div class="action-buttons">
-                            <a class="btn-icon btn-view" href=""><i class="fas fa-eye"></i></a>
+                            <a class="btn-icon btn-view" href="{{ route('showtboard', ['id' => $user]) }}"><i
+                                    class="fas fa-eye"></i></a>
                             <button class="btn-icon btn-print"><i class="fas fa-print"></i></button>
                         </div>
                     </td>
@@ -340,11 +412,8 @@
             </tbody>
         </table>
     </div>
-    <h2 class="section-title"><i class="fa-solid fa-list-check"></i> เอกสารแนบ</h2>
+    <h2 class="section-title"><i class="fa-solid fa-list-check"></i> เอกสารสำหรับแนบ</h2>
     <div class="documents-section">
-        <div class="documents-header">
-            <h3>รายการเอกสาร</h3>
-        </div>
         <table class="documents-table">
             <thead>
                 <tr>
@@ -491,7 +560,7 @@
                     <td data-label="จัดการ">
                         <div class="action-buttons">
                             <a
-                                class="btn-icon btn-view"href="{{ route('upload-file.create', ['user' => $user, 'type' => 5]) }}"><i
+                                class="btn-icon btn-view"href="{{ route('upload-file.create', ['user' => $user, 'type' => 6]) }}"><i
                                     class="fas fa-eye"></i></a>
                             {{-- <button class="btn-icon btn-print" ><i class="fas fa-print"></i></button> --}}
                         </div>

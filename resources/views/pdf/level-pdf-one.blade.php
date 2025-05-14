@@ -28,8 +28,8 @@
 <body>
     <p style="text-align: center ;"><strong>การตรวจสอบเอกสารยื่นคำขอรับเงินอุดหนุน 49(6) ของสถาบันเกษตรกร ประจำปี
             2568</strong></p>
-    <p style="text-align: center"><strong>ชื่อสถาบัน กลุ่มเกษตรกรชาวสวนยางบ้านแฮด กยท.จ.ขอนแก่น</strong></p>
-    <p style="text-align: center ; "><strong>จำนวนสมาชิกที่ขึ้นทะเบียนเกษตรกรกับการยางแห่งประเทศไทย 61 ราย</strong></p>
+    <p style="text-align: center"><strong>ชื่อสถาบัน {{$foundGroup['name'] ?? ''}} กยท.จ.ขอนแก่น</strong></p>
+    <p style="text-align: center ; "><strong>จำนวนสมาชิกที่ขึ้นทะเบียนเกษตรกรกับการยางแห่งประเทศไทย ... ราย</strong></p>
 
     <table border="1" cellspacing="0" cellpadding="0"
         style="width: calc(100% - 20px); margin-left: 10px; margin-right: 10px; margin-top: 20pt; border-collapse: collapse; font-size: 16pt;">

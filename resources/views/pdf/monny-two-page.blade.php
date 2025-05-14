@@ -15,7 +15,7 @@
         body {
             font-family: 'THSarabunNew', sans-serif;
             font-size: 16pt;
-            border: 1px solid #000;
+            /* border: 1px solid #000; */
             width: calc(100% - 10px);
             margin-left: 5px;
             margin-right: 5px;
@@ -150,21 +150,16 @@
                         <td style="border-top: none; border-bottom: none;"></td>
                     </tr>
                 @endfor
-
-
-
                 <!-- เพิ่มแถวอื่น ๆ ตามต้องการ -->
             </tbody>
         </table>
     </div>
-
-
     <div style="position: absolute; margin-top: 620px; left: 345px; padding: 10px; width: 50%;">
         <p style="margin-top: 5px;  text-align: center ;">
             ลงชื่อ....................................................ผู้เสนอโครงการ
         </p>
-        <p style="text-align: center ; margin-top: -27px;">(นายศุภเชษฐ ชัยเลิศ)</p>
-        <p style=" margin-top: -27px ; text-align: center ;">ตำแหน่ง ประธานกลุ่มเกษตรกรชาวสวนยางบ้าน</p>
+        <p style="text-align: center ; margin-top: -27px;">({{$data_post->prefix ?? ''}}{{$data_post->first_name ?? ''}} {{$data_post->last_name ?? ''}})</p>
+        <p style=" margin-top: -27px ; text-align: center ;">ตำแหน่ง ประธาน{{$foundGroup['name'] ?? ''}}</p>
         <p style="text-align: center ; margin-top: -27px;">........./........./.........</p>
     </div>
 

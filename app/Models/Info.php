@@ -5,19 +5,22 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
-class Delivery extends Model
+class Info extends Model
 {
     use HasFactory;
     protected $fillable = [
         'user_id',
         'type',
-        'count_one',
-        'count_two',
-        'time',
-        'budget' , 
+        'one',
+        'two',
+        'three',
+        'four',
+        'five',
+        'six',
+        'seven',
+        'eight',
         'file_path',
     ];
-
     protected static function boot()
     {
         parent::boot();

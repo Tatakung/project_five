@@ -55,8 +55,9 @@
         <p style="margin-top: 10px; line-height: 0.55; margin-top: -12px; "><span
                 style="text-decoration: underline;">ประเภทโครงการ</span>
 
-            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span
-                style="display: inline-block; width: 14px; height: 14px; border: 1px solid #000; margin-right: 8px; vertical-align: middle;"></span>ประชุมใหญ่สามัญประจำปี
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            <span
+                style="display: inline-block; width: 14px; height: 14px; border: 1px solid #000; margin-right: 8px; vertical-align: bottom; font-family: DejaVu Sans, sans-serif;">&#10003;</span>ประชุมใหญ่สามัญประจำปี
 
 
             </span>
@@ -87,31 +88,32 @@
 
 
         <p style=" line-height: 0.59; margin-top: -11.5px; ">ชื่อสถานะบันเกษตรกรฯ <span
-                style="font-weight : bold ; ">กลุ่มเกษตรกรชาวสวนยางบ้านแฮด</span>
+                style="font-weight : bold ; ">{{ $foundGroup['name'] ?? '' }}</span>
         </p>
         <p style=" line-height: 0.59; margin-top: -11.5px; ">ผู้รับผิดชอบโครงการ <span
-                style="font-weight : bold ; ">นายศุภเชษฐ ชัยเลิศ</span>
+                style="font-weight : bold ;">{{ $data_post->prefix ?? '' }}{{ $data_post->first_name ?? '' }}
+                {{ $data_post->last_name ?? '' }}</span>
         </p>
 
         <p style="margin-top:-18px; line-height: 0.89;  ">
-            ที่อยู่ที่สามารถติดต่อได้ <span style="font-weight: bold ; ">292 ม.21กหกหก ต.ท่าพระ อ.เมือง จ.ขอนแก่น</span>
-            เบอร์โทร <wbr>....<span style="font-weight : bold;">098-1472866</span>....<wbr>
-            จำนวน<wbr>สมาชิก<wbr>สถาบันฯ<wbr>ทั้งหมด<wbr> จำนวน......61.....คน
+            ที่อยู่ที่สามารถติดต่อได้ <span style="font-weight: bold ; "> {{ $foundGroup['address'] }} </span>
+            <wbr>เบอร์โทร <wbr>....<span style="font-weight : bold;">{{ $foundGroup['phone'] }}</span>....<wbr>
+            จำนวน<wbr>สมาชิก<wbr>สถาบันฯ<wbr>ทั้งหมด<wbr> จำนวน......{{ $cctionplans->count_one ?? '.....' }}.....คน
         </p>
 
 
         <p style=" line-height: 0.59; margin-top: -11.5px; ">จำนวนสมาชิกผู้เข้าร่วมโครงการฯ
-            เกษตรกรที่ขึ้นทะเบียนกับ กยท. ทั้งหมด จำนวน........60........คน
+            เกษตรกรที่ขึ้นทะเบียนกับ กยท. ทั้งหมด จำนวน........{{ $cctionplans->count_two ?? '...' }}........คน
         </p>
 
         <p style=" line-height: 0.59; margin-top: -11.5px; ">
             (กรณีชุมนุมสหกรณ์ จำนวนสมาชิกชุมนุมฯ ทั้งหมด............-............สถาบันฯ)
         </p>
         <p style=" line-height: 0.59; margin-top: -11.5px; ">
-            ระยะเวลาในการดำเนินโครงการ.............1.............วัน
+            ระยะเวลาในการดำเนินโครงการ.............{{ $cctionplans->time ?? '' }}.............วัน
         </p>
         <p style=" line-height: 0.59; margin-top: -11.5px; ">
-            งบประมาณในการดำเนินโครงการ............1500............ บาท
+            งบประมาณในการดำเนินโครงการ............{{ number_format($Budget) ?? '....' }}............ บาท
         </p>
         <p style=" line-height: 0.59; margin-top: -11.5px;  margin-left: 126px;">
             ทั้งนี้ ได้แนบรายละเอียดโครงการฯ ทั้งหมดมาพร้อมนี้ ขอรับรองว่าข้อมูลข้างต้นเป็น
@@ -120,32 +122,30 @@
             ความจริงทุกประการ
         </p>
 
-        <div
-            style="position: absolute; margin-top: 10px; left: 4px; border: 1px solid black; padding: 10px; width: 35%;">
+        <div style="position: absolute; margin-top: 10px; left: 4px;  padding: 10px; width: 35%;">
             <p style="margin-top: 5px; ">ลงชื่อ....................................................
             </p>
-            <p style="text-align: center ; margin-top: -27px;">(นายศุภเชษฐ ชัยเลิศ)</p>
+            <p style="text-align: center ; margin-top: -27px;">
+                ({{ $data_post->prefix ?? '' }}{{ $data_post->first_name ?? '' }} {{ $data_post->last_name ?? '' }})
+            </p>
             <p style=" margin-top: -27px;">ผู้รับผิดชอบโครงการ (เจ้าหน้าที่สถาบันฯ)</p>
             <p style="text-align: center ; margin-top: -27px;">........./........./.........</p>
         </div>
-        <div
-            style="position: absolute; margin-top: 10px; left: 430px; border: 1px solid black; padding: 10px; width: 40%;">
+        <div style="position: absolute; margin-top: 10px; left: 430px;  padding: 10px; width: 40%;">
             <p style="text-align: center ;margin-top: 5px; ">ลงชื่อ....................................................
             </p>
-            <p style="text-align: center ; margin-top: -27px;">(นายศุภเชษฐ ชัยเลิศ)</p>
+            <p style="text-align: center ; margin-top: -27px;">(นางสาวจันทิกา สมอดี)</p>
             <p style="text-align: center ; margin-top: -27px;">พนักงาน กยท. ผู้รับผิดชอบ</p>
             <p style="text-align: center ; margin-top: -27px;">........./........./.........</p>
         </div>
-        <div
-            style="position: absolute; margin-top: 200px; left: 4px; border: 1px solid black; padding: 10px; width: 35%;">
+        <div style="position: absolute; margin-top: 200px; left: 4px;  padding: 10px; width: 35%;">
             <p style="margin-top: 5px; ">ลงชื่อ....................................................
             </p>
             <p style="text-align: center ; margin-top: -27px;">(...............................................)</p>
             <p style="text-align: center ; margin-top: -27px;">หัวหน้าแผนก</p>
             <p style="text-align: center ; margin-top: -27px;">........./........./.........</p>
         </div>
-        <div
-            style="position: absolute; margin-top: 200px; left: 430px; border: 1px solid black; padding: 10px; width: 40%;">
+        <div style="position: absolute; margin-top: 200px; left: 430px;  padding: 10px; width: 40%;">
             <p style="text-align: center ;margin-top: 5px; ">ลงชื่อ....................................................
             </p>
             <p style="text-align: center ; margin-top: -27px;">(...............................................)</p>

@@ -368,9 +368,14 @@
         .pdf-preview {
             height: 300px;
         }
+        
     }
 </style>
 @section('content')
+
+
+
+
     <div class="breadcrumb">
         <a href="{{ route('user.dashboard') }}">หน้าหลัก</a>
         <span class="separator">/</span>
@@ -378,6 +383,11 @@
         <span class="separator">/</span>
         <span>หนังสือรับรอง</span>
     </div>
+
+
+
+
+
     <!-- Button trigger modal -->
     @if (session('success'))
         <div class="toast-container position-fixed top-3 end-0 p-3" style="z-index: 1055">
@@ -421,10 +431,19 @@
             </div>
             <span>
                 @if ($type == 1)
-                    แนบไฟล์เอกสารรายงานการประชุม
+                    แนบไฟล์รายงานการประชุม
                 @elseif($type == 2)
-                    ยังไม่เขียน
+                    แนบไฟล์ใบทะเบียนจัดตั้งกลุ่มเกษตรกร
+                @elseif($type == 3)
+                    แนบไฟล์หนังสือรับรองกลุ่มเกษตรกร
+                @elseif($type == 4)
+                    แนบไฟล์หนังสือรับรองการขึ้นทะเบียน
+                @elseif($type == 5)
+                    แนบไฟล์สำเนาบัตรประชาชน
+                @elseif($type == 6)
+                    แนบไฟล์คำสั่งแต่งตั้งคณะกรรมการ
                 @else
+                    แนบไฟล์
                 @endif
             </span>
         </div>
@@ -444,7 +463,7 @@
                 @else
                     <img src="/api/placeholder/400/320" alt="ตัวอย่างภาพ PDF" />
                 @endif
-            </div>  
+            </div>
             {{-- ข้อมูลไฟล๋์ต่างๆ  --}}
             <div class="file-info">
                 <div class="history-header">
@@ -511,7 +530,7 @@
             </div>
 
 
-            
+
         </div>
 
         {{-- ส่วนบันทึกกาเปลี่ยน แปลง ถ้าเกิดมีการอัพโหลดไฟล์  --}}
@@ -538,8 +557,6 @@
                 <div class="modal-body">
                     คุณต้องการลบไฟล์นี้ใช่หรือไม่?
 
-                    {{-- <input type="hidden" name="type" value="{{ $type }}">
-                    <input type="hidden" name="user" value="{{ $user }}"> --}}
                 </div>
                 <form action="{{ route('deleteFile', ['user' => $user, 'type' => $type]) }}" method="POST">
                     @csrf
@@ -554,191 +571,193 @@
     </div>
     </section>
 
-  <script>
-    document.addEventListener('DOMContentLoaded', function() {
-        // อ้างอิงองค์ประกอบที่จำเป็น
-        const filePreview = document.getElementById('filePreview');
-        const pdfPreview = document.querySelector('.pdf-preview');
-        const fileInput = document.querySelector('input[name="file_update"]');
-        const fileInfoTable = document.querySelector('.history-table');
-        const actionButtons = document.getElementById('actionButtons');
-        const updateFileBtn = document.getElementById('updateFileBtn');
-        const cancelBtn = document.getElementById('cancelButton');
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // อ้างอิงองค์ประกอบที่จำเป็น
+            const filePreview = document.getElementById('filePreview');
+            const pdfPreview = document.querySelector('.pdf-preview');
+            const fileInput = document.querySelector('input[name="file_update"]');
+            const fileInfoTable = document.querySelector('.history-table');
+            const actionButtons = document.getElementById('actionButtons');
+            const updateFileBtn = document.getElementById('updateFileBtn');
+            const cancelBtn = document.getElementById('cancelButton');
 
-        // --- จุดแก้ไขหลัก: ซ่อน actionButtons เมื่อหน้าเว็บโหลดเสร็จ ---
-        if (actionButtons) {
-            toggleActionButtons(false);
-        }
-        // --- สิ้นสุดจุดแก้ไขหลัก ---
+            // --- จุดแก้ไขหลัก: ซ่อน actionButtons เมื่อหน้าเว็บโหลดเสร็จ ---
+            if (actionButtons) {
+                toggleActionButtons(false);
+            }
+            // --- สิ้นสุดจุดแก้ไขหลัก ---
 
-        // --- จุดแก้ไขเพิ่มเติม: เรียกคืนสถานะปุ่มลบไฟล์เมื่อหน้าเว็บโหลดเสร็จ ---
-        // เพื่อให้แน่ใจว่าปุ่ม delete_file แสดงผลและมีสถานะ disabled ถูกต้องตามข้อมูลเริ่มต้น
-        restoreDeleteButtonState();
-        // --- สิ้นสุดจุดแก้ไขเพิ่มเติม ---
+            // --- จุดแก้ไขเพิ่มเติม: เรียกคืนสถานะปุ่มลบไฟล์เมื่อหน้าเว็บโหลดเสร็จ ---
+            // เพื่อให้แน่ใจว่าปุ่ม delete_file แสดงผลและมีสถานะ disabled ถูกต้องตามข้อมูลเริ่มต้น
+            restoreDeleteButtonState();
+            // --- สิ้นสุดจุดแก้ไขเพิ่มเติม ---
 
-        if (updateFileBtn && fileInput) {
-            updateFileBtn.addEventListener('click', function() {
-                fileInput.click();
-            });
-        }
+            if (updateFileBtn && fileInput) {
+                updateFileBtn.addEventListener('click', function() {
+                    fileInput.click();
+                });
+            }
 
-        // ถ้ามีการเลือกไฟล์ จะแสดงตัวอย่าง PDF
-        if (fileInput) {
-            fileInput.addEventListener('change', function() {
+            // ถ้ามีการเลือกไฟล์ จะแสดงตัวอย่าง PDF
+            if (fileInput) {
+                fileInput.addEventListener('change', function() {
+                    const delete_file = document.getElementById('delete_file');
+                    if (delete_file) {
+                        // ซ่อนปุ่มลบไฟล์ชั่วคราวเมื่อผู้ใช้กำลังจะเลือกไฟล์ใหม่
+                        delete_file.style.display = 'none';
+                    }
+
+                    if (this.files.length > 0) {
+                        const file = this.files[0];
+
+                        // ตรวจสอบประเภทไฟล์
+                        if (file.type !== 'application/pdf') {
+                            alert('กรุณาอัปโหลดไฟล์ PDF เท่านั้น');
+                            this.value = ''; // รีเซ็ตค่า input
+                            resetAndRestoreInitialState
+                                (); // คืนค่าการแสดงผลเริ่มต้น (รวมถึงปุ่มลบและ actionButtons)
+                            return;
+                        }
+
+                        // ตรวจสอบขนาดไฟล์
+                        if (file.size > 10 * 1024 * 1024) { // 10 MB
+                            alert('ขนาดไฟล์ต้องไม่เกิน 10 MB');
+                            this.value = ''; // รีเซ็ตค่า input
+                            resetAndRestoreInitialState(); // คืนค่าการแสดงผลเริ่มต้น
+                            return;
+                        }
+
+                        // แสดงตัวอย่าง PDF
+                        displayPDFPreview(file);
+
+                        // อัพเดทข้อมูลไฟล์
+                        updateFileInfo(file);
+
+                        // แสดงปุ่มบันทึกและยกเลิก
+                        toggleActionButtons(true);
+                    } else {
+                        // ผู้ใช้ยกเลิกการเลือกไฟล์ (เช่น กด Escape ใน dialog หรือไม่ได้เลือกไฟล์)
+                        resetAndRestoreInitialState();
+                    }
+                });
+            }
+
+            // ปุ่มยกเลิก
+            if (cancelBtn) {
+                cancelBtn.addEventListener('click', function(e) {
+                    e.preventDefault(); // ป้องกันการส่งฟอร์ม
+                    if (fileInput) {
+                        fileInput.value = ''; // รีเซ็ตค่า input file
+                    }
+                    resetAndRestoreInitialState
+                        (); // คืนค่าการแสดงผลเริ่มต้น (รวมถึงปุ่มลบและ actionButtons)
+                });
+            }
+
+            // ฟังก์ชัน helper สำหรับคืนค่าการแสดงผลเริ่มต้นทั้งหมด
+            function resetAndRestoreInitialState() {
+                resetPreview(); // resetPreview จะเรียก toggleActionButtons(false) อยู่แล้ว
+                restoreDeleteButtonState(); // เรียกคืนสถานะปุ่มลบไฟล์
+            }
+
+            // ฟังก์ชันสำหรับคืนค่าสถานะ (การแสดงผลและ disabled) ของปุ่ม delete_file
+            function restoreDeleteButtonState() {
                 const delete_file = document.getElementById('delete_file');
                 if (delete_file) {
-                    // ซ่อนปุ่มลบไฟล์ชั่วคราวเมื่อผู้ใช้กำลังจะเลือกไฟล์ใหม่
-                    delete_file.style.display = 'none';
+                    delete_file.style.display = 'inline-block'; // หรือ 'block' หรือตาม style เดิมที่ใช้
+                    // ตรวจสอบว่ามีข้อมูลไฟล์เดิมหรือไม่ เพื่อกำหนดสถานะ disabled ของปุ่มลบ
+                    // PHP block นี้จะถูก render โดย Laravel ตอนหน้าโหลด ทำให้ JavaScript รู้สถานะ $data เริ่มต้น
+                    @if (isset($data) && $data)
+                        delete_file.disabled = false;
+                    @else
+                        delete_file.disabled = true;
+                    @endif
                 }
-
-                if (this.files.length > 0) {
-                    const file = this.files[0];
-
-                    // ตรวจสอบประเภทไฟล์
-                    if (file.type !== 'application/pdf') {
-                        alert('กรุณาอัปโหลดไฟล์ PDF เท่านั้น');
-                        this.value = ''; // รีเซ็ตค่า input
-                        resetAndRestoreInitialState(); // คืนค่าการแสดงผลเริ่มต้น (รวมถึงปุ่มลบและ actionButtons)
-                        return;
-                    }
-
-                    // ตรวจสอบขนาดไฟล์
-                    if (file.size > 10 * 1024 * 1024) { // 10 MB
-                        alert('ขนาดไฟล์ต้องไม่เกิน 10 MB');
-                        this.value = ''; // รีเซ็ตค่า input
-                        resetAndRestoreInitialState(); // คืนค่าการแสดงผลเริ่มต้น
-                        return;
-                    }
-
-                    // แสดงตัวอย่าง PDF
-                    displayPDFPreview(file);
-
-                    // อัพเดทข้อมูลไฟล์
-                    updateFileInfo(file);
-
-                    // แสดงปุ่มบันทึกและยกเลิก
-                    toggleActionButtons(true);
-                } else {
-                    // ผู้ใช้ยกเลิกการเลือกไฟล์ (เช่น กด Escape ใน dialog หรือไม่ได้เลือกไฟล์)
-                    resetAndRestoreInitialState();
-                }
-            });
-        }
-
-        // ปุ่มยกเลิก
-        if (cancelBtn) {
-            cancelBtn.addEventListener('click', function(e) {
-                e.preventDefault(); // ป้องกันการส่งฟอร์ม
-                if (fileInput) {
-                    fileInput.value = ''; // รีเซ็ตค่า input file
-                }
-                resetAndRestoreInitialState(); // คืนค่าการแสดงผลเริ่มต้น (รวมถึงปุ่มลบและ actionButtons)
-            });
-        }
-
-        // ฟังก์ชัน helper สำหรับคืนค่าการแสดงผลเริ่มต้นทั้งหมด
-        function resetAndRestoreInitialState() {
-            resetPreview(); // resetPreview จะเรียก toggleActionButtons(false) อยู่แล้ว
-            restoreDeleteButtonState(); // เรียกคืนสถานะปุ่มลบไฟล์
-        }
-
-        // ฟังก์ชันสำหรับคืนค่าสถานะ (การแสดงผลและ disabled) ของปุ่ม delete_file
-        function restoreDeleteButtonState() {
-            const delete_file = document.getElementById('delete_file');
-            if (delete_file) {
-                delete_file.style.display = 'inline-block'; // หรือ 'block' หรือตาม style เดิมที่ใช้
-                // ตรวจสอบว่ามีข้อมูลไฟล์เดิมหรือไม่ เพื่อกำหนดสถานะ disabled ของปุ่มลบ
-                // PHP block นี้จะถูก render โดย Laravel ตอนหน้าโหลด ทำให้ JavaScript รู้สถานะ $data เริ่มต้น
-                @if (isset($data) && $data)
-                    delete_file.disabled = false;
-                @else
-                    delete_file.disabled = true;
-                @endif
-            }
-        }
-
-        // ฟังก์ชันแสดงตัวอย่าง PDF
-        function displayPDFPreview(file) {
-            // ล้าง content เดิมใน pdf preview
-            while (pdfPreview.firstChild) {
-                pdfPreview.removeChild(pdfPreview.firstChild);
             }
 
-            // สร้าง URL object สำหรับไฟล์
-            const fileURL = URL.createObjectURL(file);
+            // ฟังก์ชันแสดงตัวอย่าง PDF
+            function displayPDFPreview(file) {
+                // ล้าง content เดิมใน pdf preview
+                while (pdfPreview.firstChild) {
+                    pdfPreview.removeChild(pdfPreview.firstChild);
+                }
 
-            // สร้าง embed element สำหรับแสดง PDF
-            const embed = document.createElement('embed');
-            embed.src = fileURL;
-            embed.type = 'application/pdf';
-            embed.style.width = '100%';
-            embed.style.height = '100%';
+                // สร้าง URL object สำหรับไฟล์
+                const fileURL = URL.createObjectURL(file);
 
-            pdfPreview.appendChild(embed);
-        }
-
-        // อัพเดทข้อมูลไฟล์ในตาราง
-        function updateFileInfo(file) {
-            // อัพเดทชื่อไฟล์
-            fileInfoTable.rows[0].cells[1].textContent = file.name;
-
-            // อัพเดทขนาดไฟล์
-            const fileSizeInMB = (file.size / (1024 * 1024)).toFixed(2);
-            fileInfoTable.rows[1].cells[1].textContent = `${fileSizeInMB} MB`;
-
-            // อัพเดทวันที่อัปโหลด (ใช้เวลาปัจจุบันที่ client)
-            const now = new Date();
-            const formattedDate =
-                `${now.getDate()}/${now.getMonth() + 1}/${now.getFullYear()} ${now.getHours()}:${String(now.getMinutes()).padStart(2, '0')}`;
-            fileInfoTable.rows[2].cells[1].textContent = formattedDate;
-        }
-
-        // รีเซ็ตการแสดงตัวอย่าง
-        function resetPreview() {
-            // ล้าง content ใน pdf preview
-            while (pdfPreview.firstChild) {
-                pdfPreview.removeChild(pdfPreview.firstChild);
-            }
-
-            // ตรวจสอบว่ามีไฟล์อยู่แล้วหรือไม่ (จากข้อมูลที่ส่งมาจาก Server)
-            @if (isset($data) && $data && isset($pdfUrl))
-                // กรณีมีไฟล์อยู่แล้ว ให้แสดงไฟล์เดิม
+                // สร้าง embed element สำหรับแสดง PDF
                 const embed = document.createElement('embed');
-                embed.src = "{{ $pdfUrl }}";
+                embed.src = fileURL;
                 embed.type = 'application/pdf';
                 embed.style.width = '100%';
                 embed.style.height = '100%';
+
                 pdfPreview.appendChild(embed);
-
-                // รีเซ็ตข้อมูลในตารางกลับเป็นข้อมูลเดิม
-                fileInfoTable.rows[0].cells[1].textContent = 'รายงานการประชุม'; // หรือชื่อไฟล์เดิมถ้ามี
-                fileInfoTable.rows[1].cells[1].textContent =
-                    '{{ $data && $data->file_size ? number_format($data->file_size / (1024 * 1024), 2) . ' MB' : '-' }}';
-                fileInfoTable.rows[2].cells[1].textContent =
-                    '{{ $data && $data->created_at ? \Carbon\Carbon::parse($data->created_at)->format('d/m/Y H:i') : '-' }}';
-            @else
-                // กรณีไม่มีไฟล์ ให้แสดงภาพตัวอย่าง
-                const placeholderImg = document.createElement('img');
-                placeholderImg.src = '/api/placeholder/400/320'; // ควรตรวจสอบว่า path นี้ถูกต้อง
-                placeholderImg.alt = 'ตัวอย่างภาพ PDF';
-                pdfPreview.appendChild(placeholderImg);
-
-                // รีเซ็ตข้อมูลในตาราง
-                fileInfoTable.rows[0].cells[1].textContent = 'รายงานการประชุม'; // หรือข้อความ default
-                fileInfoTable.rows[1].cells[1].textContent = '-';
-                fileInfoTable.rows[2].cells[1].textContent = '-';
-            @endif
-
-            // ซ่อนปุ่มบันทึกและยกเลิก
-            toggleActionButtons(false);
-        }
-
-        // ฟังก์ชันสำหรับแสดงหรือซ่อนปุ่มบันทึกและยกเลิก
-        function toggleActionButtons(show) {
-            if (actionButtons) {
-                actionButtons.style.display = show ? 'flex' : 'none';
             }
-        }
-    });
-</script>
+
+            // อัพเดทข้อมูลไฟล์ในตาราง
+            function updateFileInfo(file) {
+                // อัพเดทชื่อไฟล์
+                fileInfoTable.rows[0].cells[1].textContent = file.name;
+
+                // อัพเดทขนาดไฟล์
+                const fileSizeInMB = (file.size / (1024 * 1024)).toFixed(2);
+                fileInfoTable.rows[1].cells[1].textContent = `${fileSizeInMB} MB`;
+
+                // อัพเดทวันที่อัปโหลด (ใช้เวลาปัจจุบันที่ client)
+                const now = new Date();
+                const formattedDate =
+                    `${now.getDate()}/${now.getMonth() + 1}/${now.getFullYear()} ${now.getHours()}:${String(now.getMinutes()).padStart(2, '0')}`;
+                fileInfoTable.rows[2].cells[1].textContent = formattedDate;
+            }
+
+            // รีเซ็ตการแสดงตัวอย่าง
+            function resetPreview() {
+                // ล้าง content ใน pdf preview
+                while (pdfPreview.firstChild) {
+                    pdfPreview.removeChild(pdfPreview.firstChild);
+                }
+
+                // ตรวจสอบว่ามีไฟล์อยู่แล้วหรือไม่ (จากข้อมูลที่ส่งมาจาก Server)
+                @if (isset($data) && $data && isset($pdfUrl))
+                    // กรณีมีไฟล์อยู่แล้ว ให้แสดงไฟล์เดิม
+                    const embed = document.createElement('embed');
+                    embed.src = "{{ $pdfUrl }}";
+                    embed.type = 'application/pdf';
+                    embed.style.width = '100%';
+                    embed.style.height = '100%';
+                    pdfPreview.appendChild(embed);
+
+                    // รีเซ็ตข้อมูลในตารางกลับเป็นข้อมูลเดิม
+                    fileInfoTable.rows[0].cells[1].textContent = 'รายงานการประชุม'; // หรือชื่อไฟล์เดิมถ้ามี
+                    fileInfoTable.rows[1].cells[1].textContent =
+                        '{{ $data && $data->file_size ? number_format($data->file_size / (1024 * 1024), 2) . ' MB' : '-' }}';
+                    fileInfoTable.rows[2].cells[1].textContent =
+                        '{{ $data && $data->created_at ? \Carbon\Carbon::parse($data->created_at)->format('d/m/Y H:i') : '-' }}';
+                @else
+                    // กรณีไม่มีไฟล์ ให้แสดงภาพตัวอย่าง
+                    const placeholderImg = document.createElement('img');
+                    placeholderImg.src = '/api/placeholder/400/320'; // ควรตรวจสอบว่า path นี้ถูกต้อง
+                    placeholderImg.alt = 'ตัวอย่างภาพ PDF';
+                    pdfPreview.appendChild(placeholderImg);
+
+                    // รีเซ็ตข้อมูลในตาราง
+                    fileInfoTable.rows[0].cells[1].textContent = 'รายงานการประชุม'; // หรือข้อความ default
+                    fileInfoTable.rows[1].cells[1].textContent = '-';
+                    fileInfoTable.rows[2].cells[1].textContent = '-';
+                @endif
+
+                // ซ่อนปุ่มบันทึกและยกเลิก
+                toggleActionButtons(false);
+            }
+
+            // ฟังก์ชันสำหรับแสดงหรือซ่อนปุ่มบันทึกและยกเลิก
+            function toggleActionButtons(show) {
+                if (actionButtons) {
+                    actionButtons.style.display = show ? 'flex' : 'none';
+                }
+            }
+        });
+    </script>
 @endsection
