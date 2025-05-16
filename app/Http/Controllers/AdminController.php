@@ -79,6 +79,8 @@ class AdminController extends Controller
         return redirect()->back()->with('success', 'เพิ่มรายชื่อสำเร็จ');
     }
 
+    // แจง
+
     public function updatemanageMember(Request $request, $id)
     {
         $userGroup = auth()->user()->group;
