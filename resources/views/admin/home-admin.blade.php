@@ -208,17 +208,17 @@
             }
         }
     </style>
-    <div>
+    {{-- <div>
         <p style="color: #051f3f ; text-decoration: underline;"><i class="fa-solid fa-house-user" style="color: #3498db;"></i>
             แอดมิน
         </p>
-    </div>
+    </div> --}}
 
     {{-- <h2 class="section-title"><i class="fa-solid fa-list-check"></i> ชื่อสถาบันเกษตรกร</h2> --}}
     <div class="documents-section">
         <div class="documents-header-action">
-            <h3>รายชื่อสถาบันเกษตรกร <span style="font-size: 14px;">(14 สถาบัน)</span></h3>
-            <button class="btn-add"><i class="fas fa-plus"></i> เพิ่มสถาบันเกษตรกร</button>
+            <h3>รายชื่อสถาบันเกษตรกร <span style="font-size: 14px;">(15 สถาบัน)</span></h3>
+            {{-- <button class="btn-add"><i class="fas fa-plus"></i> เพิ่มสถาบันเกษตรกร</button> --}}
         </div>
         <table class="documents-table">
             <thead>
@@ -235,7 +235,8 @@
                         <td data-label="ชื่อสถาบันเกษตรกร">{{ $item['name'] }}</td>
                         <td data-label="จัดการ">
                             <div class="action-buttons">
-                                <a class="btn-icon btn-view" href="" title="ดูรายละเอียด">
+                                <a class="btn-icon btn-view"
+                                    href="{{ route('user.dashboard', ['group' => $item['group']]) }}" title="ดูรายละเอียด">
                                     <i class="fas fa-eye"></i>
                                 </a>
                                 <a class="btn-icon btn-committee"

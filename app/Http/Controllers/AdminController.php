@@ -76,8 +76,7 @@ class AdminController extends Controller
         $member->position = $request->input('position');
         $member->user_id = $user_id_group;
         $member->save();
-        // return redirect()->back()->with('success', 'ทำรายการสำเร็จ');
-        return redirect()->route('manageMember', ['id' => $id_for_group, 'group' => $group])->with('success', 'ทำรายการสำเร็จ');
+        return redirect()->back()->with('success', 'เพิ่มรายชื่อสำเร็จ');
     }
 
     public function updatemanageMember(Request $request, $id)
@@ -102,11 +101,11 @@ class AdminController extends Controller
         }
         $dataa =  Board::find($id);
 
-        if(!$dataa) {
-            return redirect()->back()->with('error','ไม่พบข้อมูลที่ต้องการลบ') ; 
+        if (!$dataa) {
+            return redirect()->back()->with('error', 'ไม่พบข้อมูลที่ต้องการลบ');
         }
-    
+
         $dataa->delete();
-return redirect()->back()->with('success', 'ลบข้อมูลสำเร็จ');
+        return redirect()->back()->with('success', 'ลบข้อมูลสำเร็จ');
     }
 }

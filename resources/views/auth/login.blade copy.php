@@ -19,10 +19,10 @@
         }
 
         :root {
-            --primary: #3498db;
-            --primary-light: #55ace6;
-            --secondary: #55ace6;
-            --accent: #3498db;
+            --primary: #557fda;
+            --primary-light: #2e7d32;
+            --secondary: #4caf50;
+            --accent: #8bc34a;
             --text-dark: #1c2237;
             --text-light: #ffffff;
             --gray-light: #f5f7fa;
@@ -128,7 +128,7 @@
         .form-input:focus {
             outline: none;
             border-color: var(--accent);
-            box-shadow: 0 0 0 2px rgba(117, 117, 120, 0.2);
+            box-shadow: 0 0 0 2px rgba(139, 195, 74, 0.2);
         }
 
         .form-input::placeholder {
@@ -256,7 +256,7 @@
             </div>
 
             <div class="logo-text">
-                <div class="logo-title">กลุ่มเกษตรกรชาวสวนยาง</div>
+                <div class="logo-title">กลุ่มเกษตรกรชาวสวนยางบ้านแฮด</div>
                 <div class="logo-subtitle">ระบบจัดการโครงการและเอกสาร</div>
             </div>
             <div class="divider"></div>
@@ -275,10 +275,10 @@
             @endif
 
             <div class="form-group">
-                <label for="username" class="form-label">อีเมล / ชื่อผู้ใช้</label>
+                <label for="email" class="form-label">อีเมล / ชื่อผู้ใช้</label>
                 <div class="input-icon-wrapper">
-                    <input type="text" id="username" name="username" class="form-input"
-                        placeholder="กรุณากรอกอีเมลหรือชื่อผู้ใช้" required value="{{ old('username') }}">
+                    <input type="text" id="email" name="email" class="form-input"
+                        placeholder="กรุณากรอกอีเมลหรือชื่อผู้ใช้" required value="{{ old('email') }}">
                     <i class="fas fa-user input-icon"></i>
                 </div>
             </div>
@@ -292,7 +292,14 @@
                 </div>
             </div>
 
-            
+            <div class="remember-password">
+                <input type="checkbox" id="remember" name="remember" class="remember-checkbox">
+                <label for="remember">จดจำฉัน</label>
+
+                @if (Route::has('password.request'))
+                    <a href="{{ route('password.request') }}" class="forgot-password">ลืมรหัสผ่าน?</a>
+                @endif
+            </div>
 
             <button type="submit" class="login-button">
                 <i class="fas fa-sign-in-alt"></i>
@@ -300,9 +307,9 @@
             </button>
         </form>
 
-        {{-- <div class="login-footer">
+        <div class="login-footer">
             &copy; {{ date('Y') }} กลุ่มเกษตรกรชาวสวนยางบ้านแฮด. สงวนลิขสิทธิ์.
-        </div> --}}
+        </div>
     </div>
 </body>
 

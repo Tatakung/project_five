@@ -67,17 +67,23 @@
         <p style="margin-left: 400px; line-height: 0.5; margin-top: -10px;">วันที่
             ...................................................</p>
         <p style="font-weight: bold ; line-height: 0.5; margin-top: -12px;">เรื่อง ขอรับเงินส่งเสริม
-            และสนับสนุนสถาบันเกกษตรกรชาวสวนยาง
+            และสนับสนุนสถาบันเกษตรกรชาวสวนยาง
             มาตรา 49 (6)</p>
         <p style="margin-top: 10px; line-height: 0.5; margin-top: -12px; ">เรียน
             ผวก.กยท./ผอ.กยท.เขต/จังหวัด/สาขา.............ขอนแก่น...............................................................................
         </p>
-        <p style="margin-top:-18px; text-indent: 30px; line-height: 0.8;  ">ข้าพเจ้า ชื่อ......นายศุภเชษฐ
-            ชัยเลิศ......เลขประจำตัวประชาชน.....1499900371342.....<wbr>บ้านเลขที่....242....<wbr>หมู่ที่...3....<wbr>ตำบล...ท่าพระ...<wbr>อำเภอ...เมือง...<wbr>จังหวัด...ขอนแก่น...<wbr>ในฐานะประธานกลุ่ม......<wbr>(ตำแหน่งในสถาบัน)
+        <p style="margin-top:-18px; text-indent: 30px; line-height: 0.8;  ">ข้าพเจ้า
+            ชื่อ......{{ $data_post['prefix' ?? ''] }}{{ $data_post['first_name' ?? ''] }}
+            {{ $data_post['last_name' ?? ''] }}<wbr>......เลขประจำตัวประชาชน.....{{ $address->id_card_encrypted ?? '' }}.....<wbr>บ้านเลขที่....{{ $address->house_no_encrypted ?? '' }}....<wbr>หมู่ที่...{{ $address->village_no_encrypted ?? '' }}....<wbr>
+            @if ($address && $address->subdistrict_encrypted)
+                ตำบล...{{ $address->subdistrict_encrypted ?? '' }}...
+            @endif
+            <wbr>อำเภอ...{{ $address->district_encrypted ?? '' }}...<wbr>จังหวัด...{{ $address->province_encrypted ?? '' }}...<wbr>ในฐานะประธานกลุ่ม......<wbr>(ตำแหน่งในสถาบัน)
         </p>
         <p style="margin-top:-19px; text-indent: 30px; line-height: 0.8;  ">
-            ตัวแทนสถาบันเกษตรกรชาวสวนยาง<wbr>..กลุ่มเกษตรกรชาวสวนยางบ้านแฮด..<wbr>เลขทะเบียนที่...58-40205-6520000...<wbr>ที่ตั้ง....55/3....<wbr>หมู่ที่...3...<wbr>อำเภอบ้านแฮด...<wbr>จังหวัด...ขอนแก่น...<wbr>จำนวนสมาชิก<wbr>ที่ขึ้นทะเบียน<wbr>เป็นเกษตรกรชาวสวนยาง<wbr>
-            จำนวน....61.....คน</p>
+            ตัวแทนสถาบันเกษตรกรชาวสวนยาง<wbr>..{{ $foundGroup['name'] ?? '' }}..<wbr>เลขทะเบียนที่...{{ $foundGroup['id'] ?? '' }}...<wbr>ที่ตั้ง
+            {{ $foundGroup['address'] }}<wbr>....จำนวนสมาชิก<wbr>ที่ขึ้นทะเบียน<wbr>เป็นเกษตรกรชาวสวนยาง<wbr>
+            จำนวน....{{ $address->registered_count ?? '' }}.....คน</p>
         <p style="margin-top:-19px; text-indent: 30px; line-height: 0.8;  ">
             ขอรับเงินสนับสนุนกองทุนพัฒนายางพาราเพื่อการส่งเสริม สนับสนุน
             และให้ความช่วยเหลือเกษตรกรชาวสวนยาง<wbr>สถาบันเกษตรกรชาวสวนยาง และผู้ประกอบกิจการยาง ตามมาตรา 41
@@ -90,22 +96,61 @@
 
 
         <div style="margin-left: 20px;">
-            <p style="line-height: 0.5; margin-top: -10px;"><span
-                    style="display: inline-block; width: 14px; height: 14px; border: 1px solid #000; margin-right: 8px; vertical-align: middle;"></span>๑.๑
-                ประชุมใหญ่สามัญประจำปี..............เป็นเงิน.............10000.............บาท</p>
-            <p style="line-height: 0.5; margin-top: -10px;"><span
-                    style="display: inline-block; width: 14px; height: 14px; border: 1px solid #000; margin-right: 8px; vertical-align: middle;"></span>๑.๒
-                โครงการศึกษาดูงาน..................เป็นเงิน..............10000..........บาท</p>
-            <p style="line-height: 0.5; margin-top: -10px;"><span
-                    style="display: inline-block; width: 14px; height: 14px; border: 1px solid #000; margin-right: 8px; vertical-align: middle;"></span>๑.๓
-                ส่งเสริมและสนับสนุนเกษตรกรเพื่อสร้างคความเข็มในการดำเนินการกิจกรรมอื่นๆ <wbr>เป็นเงิน..21000..บาท</p>
-            <p style="line-height: 0.5; margin-top: -10px;"><span
-                    style="display: inline-block; width: 14px; height: 14px; border: 1px solid #000; margin-right: 8px; vertical-align: middle;"></span>๑.๔
-                โครงการฝึกอบรม..................เป็นเงิน..............10000..........บาท</p>
-            <p style="line-height: 0.5; margin-top: -10px;"><span
-                    style="display: inline-block; width: 14px; height: 14px; border: 1px solid #000; margin-right: 8px; vertical-align: middle;"></span>๑.๕
-                โครงการสัมนา..................เป็นเงิน..............10000..........บาท</p>
-            <p style="line-height: 0.5; margin-top: -10px;">รวม</p>
+            @if (in_array(1, $list))
+                <p style="line-height: 0.5; margin-top: -10px;"><span
+                        style="display: inline-block; width: 14px; height: 14px; border: 1px solid #000; margin-right: 8px; vertical-align: middle;"><img
+                            src="{{ public_path('images/check-mark.png') }}"
+                            style="width: 14px; height: 14px; margin-top: -1px;"></span>๑.๑
+                    ประชุมใหญ่สามัญประจำปี........................................................เป็นเงิน.............{{ $b1 ? number_format($b1) : '.' }}.............บาท
+                </p>
+            @endif
+            @if (in_array(2, $list))
+                <p style="line-height: 0.5; margin-top: -10px;"><span
+                        style="display: inline-block; width: 14px; height: 14px; border: 1px solid #000; margin-right: 8px; vertical-align: middle;"><img
+                            src="{{ public_path('images/check-mark.png') }}"
+                            style="width: 14px; height: 14px; margin-top: -1px;"></span>๑.๒
+                    โครงการสัมนา.............................................................................เป็นเงิน..............{{ $b2 ? number_format($b2) : '.' }}..........บาท
+                </p>
+            @endif
+            @if (in_array(3, $list))
+                <p style="line-height: 0.5; margin-top: -10px;"><span
+                        style="display: inline-block; width: 14px; height: 14px; border: 1px solid #000; margin-right: 8px; vertical-align: middle;"><img
+                            src="{{ public_path('images/check-mark.png') }}"
+                            style="width: 14px; height: 14px; margin-top: -1px;"></span>๑.๓
+                    โครงการฝึกอบรม........................................................................เป็นเงิน..............{{ $b3 ? number_format($b3) : '.' }}..........บาท
+                </p>
+            @endif
+
+
+
+
+            @if (in_array(4, $list))
+                <p style="line-height: 0.5; margin-top: -10px;"><span
+                        style="display: inline-block; width: 14px; height: 14px; border: 1px solid #000; margin-right: 8px; vertical-align: middle;"><img
+                            src="{{ public_path('images/check-mark.png') }}"
+                            style="width: 14px; height: 14px; margin-top: -1px;"></span>๑.๔
+                    โครงการศึกษาดูงาน...................................................................เป็นเงิน..............{{ $b4 ? number_format($b4) : '.' }}..........บาท
+                </p>
+            @endif
+            @if (in_array(5, $list))
+                <p style="line-height: 0.5; margin-top: -10px;"><span
+                        style="display: inline-block; width: 14px; height: 14px; border: 1px solid #000; margin-right: 8px; vertical-align: middle;"><img
+                            src="{{ public_path('images/check-mark.png') }}"
+                            style="width: 14px; height: 14px; margin-top: -1px;"></span>๑.๕
+                    ส่งเสริมและสนับสนุนเกษตรกรเพื่อสร้างความเข้มแข็งในการดำเนินการกิจกรรมอื่นๆ
+                </p>
+            @endif
+            @if (in_array(5, $list))
+                <p style="line-height: 0.5; margin-top: -10px; margin-left: 397px;">
+                    เป็นเงิน..............{{ $b5 ? number_format($b5) : '.' }}..........บาท
+                </p>
+            @endif
+
+            <p style="line-height: 0.5; margin-top: -10px; margin-left: 397px ; font-weight: bold ; ">
+                รวมเป้นเงิน.........{{ number_format($total) }}..........บาท
+            </p>
+
+
 
         </div>
         <p style="line-height: 0.5; margin-top: -10px; font-weight: bold;">๒. เอกสารประกอบการยื่นคำขอ</p>
@@ -146,8 +191,13 @@
 
 
 
-        
-        <p style="line-height: 0.5;  font-weight: bold">๓. ข้าพเจ้าขอรับรองว่า
+
+
+
+
+
+
+        <p style="line-height: 0.5;  font-weight: bold; margin-top: -10px;">๓. ข้าพเจ้าขอรับรองว่า
             ข้อความทั้งหมดที่ระบุข้างต้นเป็นจริงทุกประการ</p>
 
     </div>
@@ -165,14 +215,17 @@
         margin-left: 350px;
         
     ">
-        <p style="margin: 0;">ลงชื่อ........(ผู้ยื่นคำขอ/<span style="text-decoration: line-through;">ผู้รับมอบอำนาจ</span>
-)</p>
-        <p style="margin-top: -10px;;">(นายศุภเชษฐ ชัยเลิศ)</p>
+        <p style="margin: 0;">ลงชื่อ........(ผู้ยื่นคำขอ/<span
+                style="text-decoration: line-through;">ผู้รับมอบอำนาจ</span>
+            )</p>
+        <p style="margin-top: -10px;;">({{ $data_post->prefix ?? '' }}{{ $data_post->first_name ?? '' }}
+            {{ $data_post->last_name ?? '' }})</p>
         <p style="margin-top: -32px;;">..........................</p>
     </div>
     <p style="line-height: 0.5; margin-top: 14px;"><span style="font-weight: bold">หมายเหตุ</span> (๑)
         ใส่เครื่งหมายถูกในช่อง <span
-                    style="display: inline-block; width: 14px; height: 14px; border: 1px solid #000; margin-right: 8px; vertical-align: middle;"></span>หน้าข้อความที่ต้องการ</p>
+            style="display: inline-block; width: 14px; height: 14px; border: 1px solid #000; margin-right: 8px; vertical-align: middle;"></span>หน้าข้อความที่ต้องการ
+    </p>
     <p style="line-height: 0.5; margin-top: -10px; margin-left: 63px;">(๒) ให้ขีดฆ่าข้อความที่ไม่ต้องการออก
 
 

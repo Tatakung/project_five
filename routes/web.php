@@ -5,6 +5,7 @@ use App\Http\Controllers\AdminUserController;
 use App\Http\Controllers\PdfController;
 use App\Http\Controllers\RegionController;
 use App\Http\Controllers\UserController;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -19,7 +20,18 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', function () {
-    return view('welcome');
+    if (Auth::check()) {
+        $user = Auth::user();
+
+        if ($user->group === 0) {
+            return redirect()->route('admin.dashboard');
+        } else {
+            return redirect()->route('user.dashboard');
+        }
+    }
+    else{
+        return redirect('/login');
+    }
 });
 
 
@@ -32,6 +44,8 @@ Route::middleware(['auth', 'admin'])->group(function () {
 });
 Route::middleware(['auth'])->group(function () {
     Route::get('/manage-project', [UserController::class, 'manageProject'])->name('user.dashboard');
+    Route::get('/manage-project/histofer/{id}', [UserController::class, 'histofer'])->name('histofer');
+    Route::post('/manage-project/histoferSaved/{id}', [UserController::class, 'histofersave'])->name('histofersave');
     Route::get('/dashboard', function () {
         return view('dashboard');
     })->name('dashboard');
@@ -39,9 +53,9 @@ Route::middleware(['auth'])->group(function () {
     // ระดับภูมิภาค//
     // โครงการใหญ่ประจำปี
     Route::get('/manage-project/{id}/{type}/detail-sum-region.php', [RegionController::class, 'projectOneRegion'])->name('projectOneRegion');
-    Route::post('/manage-project/{type}/detail-sum-region/{group}', [RegionController::class, 'saveDataPageThrees'])->name('saveDataPageThrees');
-    Route::post('/manage-project/{type}/detail-sum-region-four/{group}', [RegionController::class, 'saveDataPageFours'])->name('saveDataPageFours');
-    Route::post('/manage-project/{type}/detail-sum-region-one/{group}', [RegionController::class, 'saveDataPageOnes'])->name('saveDataPageOnes');
+    Route::post('/manage-project/{type}/detail-sum-region/{id}', [RegionController::class, 'saveDataPageThrees'])->name('saveDataPageThrees');
+    Route::post('/manage-project/{type}/detail-sum-region-four/{id}', [RegionController::class, 'saveDataPageFours'])->name('saveDataPageFours');
+    Route::post('/manage-project/{type}/detail-sum-region-one/{id}', [RegionController::class, 'saveDataPageOnes'])->name('saveDataPageOnes');
 
 
     // เพิ่มแก้ไขไฟล์ในระดับกลุ่ม
@@ -51,11 +65,11 @@ Route::middleware(['auth'])->group(function () {
 
 
     Route::get('/view-pdf/{id}', [UserController::class, 'viewPdf'])->name('view.pdf');
-    Route::get('/download-pdf/{id}', [UserController::class, 'downloadPdf'])->name('download.pdf');
+    Route::get('/download-pdf/{id}/{user}', [UserController::class, 'downloadPdf'])->name('download.pdf');
     // เปิด pdf ในระดับ กลุ่ม
     Route::get('/manage-project/show-type-pdf-one/{id}.pdf', [PdfController::class, 'showtypepdfone'])->name('showtypepdfone');
     Route::get('/manage-project/name-members/{id}.pdf', [PdfController::class, 'showtboard'])->name('showtboard');
-    Route::get('/manage-project/ngb-one', [PdfController::class, 'ngbOne'])->name('ngbOne');
+    Route::post('/manage-project/ngb-one/{id}.pdf', [PdfController::class, 'ngbOne'])->name('ngbOne');
     Route::get('/manage-project/ngb-three/{id}.pdf', [PdfController::class, 'ngbThree'])->name('ngbThree');
     Route::get('/manage-project/navigate-page/{id}/{type}.pdf', [PdfController::class, 'navigatePage'])->name('navigatePage');
     Route::get('/manage-project/monny-one-page/{id}/{type}.pdf', [PdfController::class, 'monnyOnePage'])->name('monnyOnePage');
@@ -70,3 +84,6 @@ Route::middleware(['auth'])->group(function () {
 
 Route::get('/admin/register-user', [AdminUserController::class, 'showRegisterForm'])->name('admin.register.form');
 Route::post('/admin/register-user', [AdminUserController::class, 'registerUser'])->name('admin.storeUser');
+
+
+

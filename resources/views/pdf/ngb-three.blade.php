@@ -34,7 +34,7 @@
     padding: 10px;
     font-size: 16pt;
 ">
-        <p style="font-size: 17pt; margin-top: -20px;"><strong>แบบ <span style="font-weight: bold">งสบ 3</span></strong>
+        <p style="font-size: 17pt; margin-top: -20px;"><strong>แบบ <span style="font-weight: bold">งสบ.๓</span></strong>
         </p>
     </div>
     <div

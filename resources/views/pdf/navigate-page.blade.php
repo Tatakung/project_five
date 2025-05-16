@@ -15,7 +15,7 @@
         body {
             font-family: 'THSarabunNew', sans-serif;
             font-size: 16pt;
-            border: 1px solid #000;
+            /* border: 1px solid #000; */
             width: calc(100% - 32px);
             margin-left: 16px;
             margin-right: 16px;
@@ -50,20 +50,42 @@
             กยท.สาขา..........-..........จังหวัด............ขอนแก่น................กยท.........ภาคตะวันออกเฉียงเหนือ............
         </p>
         <p style="margin-top: 10px; line-height: 0.55; margin-top: -12px; ">ชื่อโครงการ <span
-                style="font-weight : bold ; ">ประชุมใหญ่สามัญประจำปี</span>
+                style="font-weight : bold ; ">
+                @if ($type == 1)
+                    โครงการใหญ่ประจำปี
+                @elseif($type == 2)
+                    โครงการสัมนา
+                @elseif($type == 3)
+                    โครงการฝึกอบรม
+                @elseif($type == 4)
+                    โครงการศึกษาดูงาน
+                @elseif($type == 5)
+                    โครงการส่งเสริมศักยภาพ
+                @endif
+            </span>
         </p>
         <p style="margin-top: 10px; line-height: 0.55; margin-top: -12px; "><span
                 style="text-decoration: underline;">ประเภทโครงการ</span>
 
             &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
             <span
-                style="display: inline-block; width: 14px; height: 14px; border: 1px solid #000; margin-right: 8px; vertical-align: bottom; font-family: DejaVu Sans, sans-serif;">&#10003;</span>ประชุมใหญ่สามัญประจำปี
+                style="display: inline-block; width: 14px; height: 14px; border: 1px solid #000; margin-right: 8px; vertical-align: bottom; ">
+                @if ($type == 1)
+                    <img src="{{ public_path('images/check-mark.png') }}"
+                        style="width: 14px; height: 14px; margin-top: -1px;">
+                @endif
+            </span>ประชุมใหญ่สามัญประจำปี
 
 
             </span>
 
             &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span
-                style="display: inline-block; width: 14px; height: 14px; border: 1px solid #000; margin-right: 8px; vertical-align: middle;"></span>สัมมนาประจำปี
+                style="display: inline-block; width: 14px; height: 14px; border: 1px solid #000; margin-right: 8px; vertical-align: middle;">
+            @if ($type == 2)
+                    <img src="{{ public_path('images/check-mark.png') }}"
+                        style="width: 14px; height: 14px; margin-top: -1px;">
+                @endif
+            </span>สัมมนาประจำปี
 
 
 
@@ -71,17 +93,34 @@
             </span>
 
             &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span
-                style="display: inline-block; width: 14px; height: 14px; border: 1px solid #000; margin-right: 8px; vertical-align: middle;"></span>ศึกษาดูงาน
+                style="display: inline-block; width: 14px; height: 14px; border: 1px solid #000; margin-right: 8px; vertical-align: middle;">
+            @if ($type == 3)
+                    <img src="{{ public_path('images/check-mark.png') }}"
+                        style="width: 14px; height: 14px; margin-top: -1px;">
+                @endif
+            </span>ฝึกอบรม
 
 
 
         </p>
         <p style=" line-height: 0.55; margin-top: -11.5px; ">
             &nbsp;&nbsp;&nbsp;<span
-                style="display: inline-block; width: 14px; height: 14px; border: 1px solid #000; margin-right: 8px; vertical-align: middle;"></span>ฝึกอบรม
+                style="display: inline-block; width: 14px; height: 14px; border: 1px solid #000; margin-right: 8px; vertical-align: middle;">
+            @if ($type == 4)
+                    <img src="{{ public_path('images/check-mark.png') }}"
+                        style="width: 14px; height: 14px; margin-top: -1px;">
+                @endif
+            </span>ศึกษาดูงาน
             </span>
+
+
             &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span
-                style="display: inline-block; width: 14px; height: 14px; border: 1px solid #000; margin-right: 8px; vertical-align: middle; margin-left: 3.3px;"></span>ส่งเสริมและสนับสนุนเกษตรกรเพื่อสร้างความเข็มในการดำเนินการกิจกรรม
+                style="display: inline-block; width: 14px; height: 14px; border: 1px solid #000; margin-right: 8px; vertical-align: middle; margin-left: 3.3px;">
+            @if ($type == 5)
+                    <img src="{{ public_path('images/check-mark.png') }}"
+                        style="width: 14px; height: 14px; margin-top: -1px;">
+                @endif
+            </span>ส่งเสริมและสนับสนุนเกษตรกรเพื่อสร้างความเข็มในการดำเนินการกิจกรรม
             อื่นๆ
             </span>
         </p>
@@ -113,7 +152,7 @@
             ระยะเวลาในการดำเนินโครงการ.............{{ $cctionplans->time ?? '' }}.............วัน
         </p>
         <p style=" line-height: 0.59; margin-top: -11.5px; ">
-            งบประมาณในการดำเนินโครงการ............{{ number_format($Budget) ?? '....' }}............ บาท
+            งบประมาณในการดำเนินโครงการ............{{ number_format($cctionplans->budget) ?? '....' }}............ บาท
         </p>
         <p style=" line-height: 0.59; margin-top: -11.5px;  margin-left: 126px;">
             ทั้งนี้ ได้แนบรายละเอียดโครงการฯ ทั้งหมดมาพร้อมนี้ ขอรับรองว่าข้อมูลข้างต้นเป็น
@@ -126,7 +165,8 @@
             <p style="margin-top: 5px; ">ลงชื่อ....................................................
             </p>
             <p style="text-align: center ; margin-top: -27px;">
-                ({{ $data_post->prefix ?? '' }}{{ $data_post->first_name ?? '' }} {{ $data_post->last_name ?? '' }})
+                ({{ $data_post->prefix ?? '..........' }}{{ $data_post->first_name ?? '....................' }}
+                {{ $data_post->last_name ?? '' }})
             </p>
             <p style=" margin-top: -27px;">ผู้รับผิดชอบโครงการ (เจ้าหน้าที่สถาบันฯ)</p>
             <p style="text-align: center ; margin-top: -27px;">........./........./.........</p>

@@ -18,7 +18,8 @@ return new class extends Migration
             $table->integer('count_one')->nullable(); //จำนวนสมาชิกในสถาบันทั้งหมด
             $table->integer('count_two')->nullable(); //เกษตรกรทั้งหมดที่ขึ้นทะเบียนกับ กยท.
             $table->integer('time')->nullable(); // ระบะเวลาในการดำเนินงาน
-            
+            $table->integer('budget')->nullable(); 
+
             $table->string('file_path')->nullable();
             $table->timestamps();
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');

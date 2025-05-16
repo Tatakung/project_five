@@ -16,26 +16,10 @@
 
 <style>
     /* Styles เฉพาะของหน้า Document Upload */
-    .breadcrumb {
-        display: flex;
-        align-items: center;
-        gap: 8px;
-        margin-bottom: 25px;
-        font-size: 0.9rem;
-    }
 
-    .breadcrumb a {
-        color: #3498db;
-        text-decoration: none;
-    }
 
-    .breadcrumb a:hover {
-        text-decoration: underline;
-    }
 
-    .breadcrumb .separator {
-        color: #7f8c8d;
-    }
+
 
     .doc-header {
         display: flex;
@@ -368,7 +352,28 @@
         .pdf-preview {
             height: 300px;
         }
-        
+
+    }
+
+    .breadcrumb {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        margin-bottom: 25px;
+        font-size: 0.9rem;
+    }
+
+    .breadcrumb a {
+        color: #3498db;
+        text-decoration: none;
+    }
+
+    .breadcrumb a:hover {
+        text-decoration: underline;
+    }
+
+    .breadcrumb .separator {
+        color: #7f8c8d;
     }
 </style>
 @section('content')
@@ -376,21 +381,34 @@
 
 
 
-    <div class="breadcrumb">
-        <a href="{{ route('user.dashboard') }}">หน้าหลัก</a>
-        <span class="separator">/</span>
-        <a href="#">เอกสารประกอบ</a>
-        <span class="separator">/</span>
-        <span>หนังสือรับรอง</span>
-    </div>
+
+    <nav style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{{ route('user.dashboard') }}">หน้าหลัก</a></li>
+            <li class="breadcrumb-item active" aria-current="page">
+                @if ($type == 1)
+                    แนบเอกสารรายงานการประชุม
+                @elseif($type == 2)
+                    แนบเอกสารใบทะเบียนจัดตั้งกลุ่มเกษตรกร
+                @elseif($type == 3)
+                    แนบเอกสารหนังสือรับรองกลุ่มเกษตรกร
+                @elseif($type == 4)
+                    แนบเอกสารหนังสือรับรองการขึ้นทะเบียน
+                @elseif($type == 5)
+                    แนบเอกสารสำเนาบัตรประชาชน(ประธานกรรมการ)
+                @elseif($type == 6)
+                    แนบเอกคำสั่งแต่งตั้งคณะกรรมการ
+                @endif
+            </li>
+        </ol>
+    </nav>
 
 
 
 
 
-    <!-- Button trigger modal -->
     @if (session('success'))
-        <div class="toast-container position-fixed top-3 end-0 p-3" style="z-index: 1055">
+        <div class="toast-container position-fixed top-3 end-0 p-3" style="z-index: 1055" id="toastContainerSuccess">
             <div class="toast show border-0 shadow-lg animate__animated animate__fadeInDown" role="alert"
                 aria-live="assertive" aria-atomic="true" id="successToast"
                 style="background: #28a745; color: white; min-width: 300px;">
@@ -406,20 +424,33 @@
                 </div>
             </div>
         </div>
-
-        {{-- โหลด Animate.css และ Bootstrap Icons ถ้ายังไม่ได้โหลด --}}
         <link href="https://cdn.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css" rel="stylesheet">
         <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
-
         <script>
-            window.addEventListener('DOMContentLoaded', () => {
+            document.addEventListener('DOMContentLoaded', () => {
+                const toastContainer = document.getElementById('toastContainerSuccess');
                 const toastEl = document.getElementById('successToast');
-                const toast = new bootstrap.Toast(toastEl, {
-                    animation: true,
-                    autohide: true,
-                    delay: 5000
-                });
-                toast.show();
+
+                // ตรวจสอบว่าหน้านี้ถูกโหลดจากการเปลี่ยน URL หรือกดย้อนกลับ
+                if (toastEl && performance.getEntriesByType("navigation")[0].type !== "back_forward") {
+                    const toast = new bootstrap.Toast(toastEl, {
+                        animation: true,
+                        autohide: true,
+                        delay: 5000
+                    });
+                    toast.show();
+                } else if (toastContainer) {
+                    // ลบ element ทิ้งเลยถ้าเป็นการกดย้อนกลับ
+                    toastContainer.remove();
+
+                    // หรือถ้าต้องการให้แน่ใจว่าจะไม่มีปัญหากับ DOM structure
+                    // สามารถใช้ setTimeout เพื่อให้แน่ใจว่าหน้าเว็บโหลดเสร็จแล้ว
+                    setTimeout(() => {
+                        if (document.getElementById('toastContainerSuccess')) {
+                            document.getElementById('toastContainerSuccess').remove();
+                        }
+                    }, 100);
+                }
             });
         </script>
     @endif
@@ -493,7 +524,8 @@
                         <td>
                             <div style="display: flex; gap: 15px;">
                                 @if (isset($data) && $data)
-                                    <a href="{{ route('download.pdf', ['id' => $data->id]) }}" class="btn btn-warning">
+                                    <a href="{{ route('download.pdf', ['id' => $data->id, 'user' => $user]) }}"
+                                        class="btn btn" style="background: #3498db ;">
                                         <i class="fas fa-download"></i> ดาวน์โหลด
                                     </a>
                                 @else
@@ -501,7 +533,7 @@
                                         <i class="fas fa-download"></i> ดาวน์โหลด
                                     </button>
                                 @endif
-                                <button type="button" class="btn btn-warning" id="updateFileBtn">
+                                <button type="button" class="btn btn" id="updateFileBtn" style="background: #b3b4b6">
                                     <i class="fas fa-upload"></i> อัปเดตไฟล์
                                 </button>
                                 <input type="file" name="file_update" accept="application/pdf" style="display: none;">
@@ -545,30 +577,124 @@
         </div>
     </form>
 
-    {{-- ลบข้อมูลmodal --}}
+    <!-- Modal ลบข้อมูล - เวอร์ชันที่ปรับปรุง -->
     <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
         aria-labelledby="staticBackdropLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
-                <div class="modal-header">
-                    <h1 class="modal-title fs-5" id="staticBackdropLabel">ลบไฟล์</h1>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                <div class="modal-header bg-danger text-white">
+                    <h5 class="modal-title" id="staticBackdropLabel">
+                        <i class="fas fa-trash-alt me-2"></i>ยืนยันการลบไฟล์
+                    </h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
+                        aria-label="Close"></button>
                 </div>
-                <div class="modal-body">
-                    คุณต้องการลบไฟล์นี้ใช่หรือไม่?
-
+                <div class="modal-body py-4">
+                    <div class="d-flex align-items-center">
+                        <div class="modal-icon-wrapper me-3">
+                            <i class="fas fa-exclamation-triangle text-warning fa-2x"></i>
+                        </div>
+                        <div>
+                            <h5 class="mb-1">คุณต้องการลบไฟล์นี้ใช่หรือไม่?</h5>
+                            <p class="text-muted mb-0">การดำเนินการนี้ไม่สามารถยกเลิกได้ กรุณายืนยันอีกครั้ง</p>
+                        </div>
+                    </div>
                 </div>
                 <form action="{{ route('deleteFile', ['user' => $user, 'type' => $type]) }}" method="POST">
                     @csrf
                     @method('DELETE')
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">ยกเลิก</button>
-                        <button type="submit" class="btn btn-primary">ยืนยัน</button>
+                        <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">
+                            <i class="fas fa-times me-1"></i>ยกเลิก
+                        </button>
+                        <button type="submit" class="btn btn-danger">
+                            <i class="fas fa-trash-alt me-1"></i>ยืนยันการลบ
+                        </button>
                     </div>
                 </form>
             </div>
         </div>
     </div>
+
+    <!-- เพิ่ม CSS สำหรับตกแต่ง Modal -->
+    <style>
+        .modal-content {
+            border: none;
+            border-radius: 8px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+
+        .modal-header {
+            padding: 15px 20px;
+            border-bottom: none;
+        }
+
+        .modal-body {
+            padding: 20px;
+        }
+
+        .modal-footer {
+            padding: 15px 20px;
+            border-top: 1px solid rgba(0, 0, 0, 0.05);
+        }
+
+        .btn-outline-secondary {
+            color: #6c757d;
+            border-color: #6c757d;
+            background-color: transparent;
+            transition: all 0.2s;
+        }
+
+        .btn-outline-secondary:hover {
+            background-color: #f1f3f5;
+            color: #495057;
+        }
+
+        .btn-danger {
+            background-color: #dc3545;
+            border-color: #dc3545;
+            transition: all 0.2s;
+        }
+
+        .btn-danger:hover {
+            background-color: #c82333;
+            border-color: #bd2130;
+        }
+
+
+
+
+
+        .modal-icon-wrapper {
+            width: 50px;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* Animation */
+        .modal.fade .modal-dialog {
+            transition: transform 0.3s ease-out;
+        }
+
+        .modal.fade .modal-content {
+            animation: modalFadeIn 0.3s forwards;
+        }
+
+        @keyframes modalFadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    </style>
     </section>
 
     <script>

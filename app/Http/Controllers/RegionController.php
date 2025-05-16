@@ -18,6 +18,24 @@ class RegionController extends Controller
     // 5โครงการหลัก 
     public function projectOneRegion($id, $type)
     {
+        $is_login = auth()->user(); //ใช้งาน
+        $targetUser = User::findOrFail($id); //lส่งมา
+        // ถ้าเป็นแอดมิน 
+        if ($is_login->group === 0) {
+        }
+        // ถ้าไม่ใช่แอดมิน
+        elseif ($is_login->group !== $targetUser->group) {
+            abort(403, 'ไม่มีสิทธิ์ในหน้านี้');
+        } elseif ($is_login->group === $targetUser->group) {
+            $id = $id;
+        } else {
+            abort(403, 'ไม่มีสิทธิ์ในหน้านี้');
+        }
+
+
+
+
+
         // idต้องเป็นuser นั้นๆ อย่าลืมว่า แอดมิน ต้องกำหนดให้เป็น group อะ   แต่ยังไม่ได้ทำเลย 
         // // ส่งค่ากลับไปเป็น value 
         $data_value_page_three = Actionplans::where('user_id', $id)
@@ -30,10 +48,10 @@ class RegionController extends Controller
             ->where('type', $type)
             ->first();
         $group = User::where('id', $id)->value('group');
-        $activeTab = 'tab-content-2'; // สมมติว่าต้องการให้แท็บ 3 active หลังบันทึก+
+        $activeTab = 'tab-content-1'; // สมมติว่าต้องการให้แท็บ 3 active หลังบันทึก+
 
 
-        // 👇 ตรวจสอบว่ามีไฟล์อยู่ในฐานข้อมูล Info หรือไม่
+        //ตรวจสอบว่ามีไฟล์อยู่ในฐานข้อมูล Info หรือไม่
         $file_info = Info::where('user_id', $id)
             ->where('type', $type)
             ->first();
@@ -46,30 +64,26 @@ class RegionController extends Controller
         }
         return view('region.one-region', compact('group', 'type', 'data_value_page_three', 'activeTab', 'data_value_page_four', 'id', 'data_value_page_one', 'hasFile', 'fileName'));
     }
-    public function saveDataPageThrees(Request $request, $type, $group)
+    public function saveDataPageThrees(Request $request, $type, $id)
     {
-        // ตรวจสอบว่า login หือยัง
-        if (!auth()->id()) {
-            abort(403, 'ไม่มีสิทธิเข้าถึง');
+
+        $is_login = auth()->user(); //ใช้งาน
+        $targetUser = User::findOrFail($id); //lส่งมา
+
+        // ถ้าเป็นแอดมิน 
+        if ($is_login->group === 0) {
         }
-        // ตรวจสอบสิทธิ์สำหรับผู้ใช้งานทั่วไป (กลุ่ม 1-14)
-        if (auth()->user()->group !== 0 && auth()->user()->group != $group) {
-            abort(403, 'คุณไม่มีสิทธิบันทึกข้อมูลให้กับกลุ่มอื่น');
-        }
-        // ตรวจสอบว่า แล้วคนที่เข้าสู่ระบบอะ มันคือแอดมินหรือว่าพนักงาน
-        if (auth()->user()->group === 0) {
-            $user = User::where('group', $group)->value('id');
-            if (!$user) {
-                abort(404, 'เกิดข้อผิดพลาด');
-            }
+        // ถ้าไม่ใช่แอดมิน
+        elseif ($is_login->group !== $targetUser->group) {
+            abort(403, 'ไม่มีสิทธิ์ในหน้านี้');
+        } elseif ($is_login->group === $targetUser->group) {
+            $id = $id;
         } else {
-            $user = auth()->id();
-            // ตรวจสอบเพิ่มเติมว่า $group ที่ส่งมาตรงกับกลุ่มของผู้ใช้หรือไม่ (ซ้ำอีกครั้งเพื่อความแน่ใจ)
-            if (auth()->user()->group != $group) {
-                abort(403, 'เกิดข้อผิดพลาด');
-            }
+            abort(403, 'ไม่มีสิทธิ์ในหน้านี้');
         }
-        $pass_action = Actionplans::where('user_id', $user)
+        $user = User::find($id);
+
+        $pass_action = Actionplans::where('user_id', $user->id)
             ->where('type', $type)
             ->first();
 
@@ -92,7 +106,7 @@ class RegionController extends Controller
         } else {
             // ถ้าไม่มีข้อมูลให้เพิ่ม
             $create_data = new Actionplans();
-            $create_data->user_id = $user;
+            $create_data->user_id = $user->id;
             $create_data->type = $type;
             $create_data->target_a = $request->input('target_a');
             $create_data->budget_a = $request->input('budget_a');
@@ -105,25 +119,21 @@ class RegionController extends Controller
             $create_data->save();
         }
         $activeTab = 'tab-content-3'; // สมมติว่าต้องการให้แท็บ 3 active หลังบันทึก
-        return redirect()->back()->with('success', 'เพิ่มข้อมูลสำเร็จ')
+        return redirect()->back()->with('success', 'บันทึกข้อมูลสำเร็จ')
             ->with('activeTab', $activeTab);
     }
-    public function saveDataPageFours(Request $request, $type, $group)
+    public function saveDataPageFours(Request $request, $type, $id)
     {
-        // ตรวจสอบว่า แล้วคนที่เข้าสู่ระบบอะ มันคือแอดมินหรือว่าพนักงาน
-        if (auth()->user()->group === 0) {
-            $user = User::where('group', $group)->value('id');
-            if (!$user) {
-                abort(404, 'เกิดข้อผิดพลาด');
-            }
-        } else {
-            $user = auth()->id();
-            // ตรวจสอบเพิ่มเติมว่า $group ที่ส่งมาตรงกับกลุ่มของผู้ใช้หรือไม่ (ซ้ำอีกครั้งเพื่อความแน่ใจ)
-            if (auth()->user()->group != $group) {
-                abort(403, 'เกิดข้อผิดพลาด');
-            }
+        $is_login = auth()->user();
+        $targetUser = User::findOrFail($id);
+
+        // ถ้าไม่ใช่แอดมิน และกลุ่มไม่ตรงกัน
+        if ($is_login->group !== 0 && $is_login->group !== $targetUser->group) {
+            abort(403, 'ไม่มีสิทธิ์ในหน้านี้');
         }
-        $pass_action = Spending::where('user_id', $user)
+
+        $user = User::find($id);
+        $pass_action = Spending::where('user_id', $user->id)
             ->where('type', $type)
             ->first();
         if ($pass_action) {
@@ -136,7 +146,7 @@ class RegionController extends Controller
             $update_update->save();
         } else {
             $create = new Spending();
-            $create->user_id = $user;
+            $create->user_id = $user->id;
             $create->type = $type;
             $create->bugget = $request->input('bugget');
             $create->actual_spent = $request->input('actual_spent');
@@ -145,46 +155,45 @@ class RegionController extends Controller
             $create->save();
         }
         $activeTab = 'tab-content-4'; // สมมติว่าต้องการให้แท็บ 3 active หลังบันทึก
-        return redirect()->back()->with('success', 'เพิ่มข้อมูลสำเร็จ')
+        return redirect()->back()->with('success', 'บันทึกข้อมูลสำเร็จ')
             ->with('activeTab', $activeTab);
     }
-    public function saveDataPageOnes(Request $request, $type, $group)
+    public function saveDataPageOnes(Request $request, $type, $id)
     {
-        // ตรวจสอบว่า แล้วคนที่เข้าสู่ระบบอะ มันคือแอดมินหรือว่าพนักงาน
-        if (auth()->user()->group === 0) {
-            $user = User::where('group', $group)->value('id');
-            if (!$user) {
-                abort(404, 'เกิดข้อผิดพลาด');
-            }
-        } else {
-            $user = auth()->id();
-            // ตรวจสอบเพิ่มเติมว่า $group ที่ส่งมาตรงกับกลุ่มของผู้ใช้หรือไม่ (ซ้ำอีกครั้งเพื่อความแน่ใจ)
-            if (auth()->user()->group != $group) {
-                abort(403, 'เกิดข้อผิดพลาด');
-            }
+        $is_login = auth()->user();
+        $targetUser = User::findOrFail($id);
+
+        // ถ้าไม่ใช่แอดมิน และกลุ่มไม่ตรงกัน
+        if ($is_login->group !== 0 && $is_login->group !== $targetUser->group) {
+            abort(403, 'ไม่มีสิทธิ์ในหน้านี้');
         }
-        $pass_action = Delivery::where('user_id', $user)
+
+
+        $user = User::find($id); //รอคอมเม้นออกนะ เ
+
+        $pass_action = Delivery::where('user_id', $user->id)
             ->where('type', $type)
             ->first();
-
         if ($pass_action) {
             // ถ้ามีข้อมูลให้อัพเดต
             $update_update = Delivery::find($pass_action->id);
             $update_update->count_one = $request->input('count_one');
             $update_update->count_two = $request->input('count_two');
             $update_update->time = $request->input('time');
+            $update_update->budget = $request->input('budget');
             $update_update->save();
         } else {
             $create = new Delivery();
-            $create->user_id = $user;
+            $create->user_id = $user->id;
             $create->type = $type;
             $create->count_one = $request->input('count_one');
             $create->count_two = $request->input('count_two');
             $create->time = $request->input('time');
+            $create->budget = $request->input('budget');
             $create->save();
         }
         $activeTab = 'tab-content-1'; // สมมติว่าต้องการให้แท็บ 3 active หลังบันทึก
-        return redirect()->back()->with('success', 'เพิ่มข้อมูลสำเร็จ')
+        return redirect()->back()->with('success', 'บันทึกข้อมูลสำเร็จ')
             ->with('activeTab', $activeTab);
     }
 
@@ -264,7 +273,8 @@ class RegionController extends Controller
                 'type' => $type,
             ]);
         }
-        return back()->with('success', 'อัปโหลดไฟล์ (เข้ารหัส) เรียบร้อยแล้ว');
+        $activeTab = 'tab-content-2';
+        return back()->with('success', 'อัปโหลดไฟล์สำเร็จ')->with('activeTab', $activeTab);
     }
     public function reReTwo(Request $request, $id, $type)
     {
@@ -277,7 +287,8 @@ class RegionController extends Controller
         } else {
             return back()->with('success', 'ไม่มีไฟล์');
         }
-        return back()->with('success', 'ลบอัปโหลดไฟล์ (เข้ารหัส) เรียบร้อยแล้ว');
+        $activeTab = 'tab-content-2';
+        return back()->with('success', 'ลบไฟล์สำเร็จ')->with('activeTab', $activeTab);
     }
     public function TwoDownload($id, $type)
     {
@@ -291,11 +302,14 @@ class RegionController extends Controller
         $decryptedContent = Crypt::decrypt($encryptedContent);
 
         // สร้างชื่อไฟล์สำหรับดาวน์โหลด
-        $filename = 'รายงานการประชุม.pdf';
+        $filename = 'ข้อมูลโครงการ.pdf';
+
+
+        $activeTab = 'tab-content-2';
 
         // ส่งกลับเป็นไฟล์ดาวน์โหลด
         return response($decryptedContent)
             ->header('Content-Type', 'application/pdf')
-            ->header('Content-Disposition', 'attachment; filename="' . $filename . '"');
+            ->header('Content-Disposition', 'attachment; filename="' . $filename . '"');;
     }
 }

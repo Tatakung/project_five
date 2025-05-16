@@ -57,7 +57,7 @@
             </tr>
             <tr style="line-height: 0.90;">
                 <td style="padding: 0; text-align: center">2</td>
-                <td style="padding: 0; text-indent: 4px;">โครงการขอรับเงินวนับสนุน</td>
+                <td style="padding: 0; text-indent: 4px;">โครงการขอรับเงินสนับสนุน</td>
                 <td style="padding: 0; text-align: center;">
                     <img src="{{ public_path('images/check-mark.png') }}"
                         style="width: 14px; height: 14px; margin-top: 5px;">

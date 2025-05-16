@@ -17,7 +17,7 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 20px;
+            margin-bottom: 5px;
         }
 
         .project-title {
@@ -78,12 +78,12 @@
         }
 
         .btn-success {
-            background-color: #2ecc71;
+            background-color: #258bda;
             color: white;
         }
 
         .btn-success:hover {
-            background-color: #27ae60;
+            background-color: rgb(56, 112, 149);
         }
 
         .tabs {
@@ -191,46 +191,28 @@
 
         .export-notice {
             background-color: #f8f9fa;
+            border: 1px solid #e9ecef;
             border-left: 4px solid #3498db;
-            padding: 15px;
-            margin: 20px 9;
-            border-radius: 0 4px 4px 0;
-            display: flex;
-            align-items: center;
-            gap: 15px;
+            border-radius: 8px;
+            padding: 15px 20px;
+            margin: 25px 0;
+            margin-top: 1px;
         }
 
-        .export-notice-icon {
-            color: #3498db;
-            font-size: 1.5rem;
+        .export-notice-content {
+            color: #495057;
         }
 
         .export-notice-content h4 {
-            margin-bottom: 5px;
-            color: #2c3e50;
+            font-size: 1.1rem;
+            margin-bottom: 8px;
+            color: #212529;
+            font-weight: 600;
         }
 
         .export-notice-content p {
-            color: #7f8c8d;
-            font-size: 0.9rem;
-        }
-
-        .floating-export {
-            position: fixed;
-            bottom: 30px;
-            right: 30px;
-            background-color: #3498db;
-            color: white;
-            width: 60px;
-            height: 60px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-            cursor: pointer;
-            transition: all 0.3s;
-            z-index: 100;
+            margin-bottom: 0;
+            font-size: 0.95rem;
         }
 
         .floating-export:hover {
@@ -419,9 +401,32 @@
             left: -15px;
             color: #3498db;
         }
+
+        .breadcrumb {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 14px;
+            font-size: 0.9rem;
+            margin-top: -13px;
+            /* font-size: 16px; */
+        }
+
+        .breadcrumb a {
+            color: #3498db;
+            text-decoration: none;
+        }
+
+        .breadcrumb a:hover {
+            text-decoration: underline;
+        }
+
+        .breadcrumb .separator {
+            color: #7f8c8d;
+        }
     </style>
     @if (session('success'))
-        <div class="toast-container position-fixed top-3 end-0 p-3" style="z-index: 1055">
+        <div class="toast-container position-fixed top-3 end-0 p-3" style="z-index: 1055" id="toastContainerSuccess">
             <div class="toast show border-0 shadow-lg animate__animated animate__fadeInDown" role="alert"
                 aria-live="assertive" aria-atomic="true" id="successToast"
                 style="background: #28a745; color: white; min-width: 300px;">
@@ -437,30 +442,60 @@
                 </div>
             </div>
         </div>
-
-        {{-- โหลด Animate.css และ Bootstrap Icons ถ้ายังไม่ได้โหลด --}}
         <link href="https://cdn.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css" rel="stylesheet">
         <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
-
         <script>
-            window.addEventListener('DOMContentLoaded', () => {
+            document.addEventListener('DOMContentLoaded', () => {
+                const toastContainer = document.getElementById('toastContainerSuccess');
                 const toastEl = document.getElementById('successToast');
-                const toast = new bootstrap.Toast(toastEl, {
-                    animation: true,
-                    autohide: true,
-                    delay: 5000
-                });
-                toast.show();
+
+                // ตรวจสอบว่าหน้านี้ถูกโหลดจากการเปลี่ยน URL หรือกดย้อนกลับ
+                if (toastEl && performance.getEntriesByType("navigation")[0].type !== "back_forward") {
+                    const toast = new bootstrap.Toast(toastEl, {
+                        animation: true,
+                        autohide: true,
+                        delay: 5000
+                    });
+                    toast.show();
+                } else if (toastContainer) {
+                    // ลบ element ทิ้งเลยถ้าเป็นการกดย้อนกลับ
+                    toastContainer.remove();
+
+                    // หรือถ้าต้องการให้แน่ใจว่าจะไม่มีปัญหากับ DOM structure
+                    // สามารถใช้ setTimeout เพื่อให้แน่ใจว่าหน้าเว็บโหลดเสร็จแล้ว
+                    setTimeout(() => {
+                        if (document.getElementById('toastContainerSuccess')) {
+                            document.getElementById('toastContainerSuccess').remove();
+                        }
+                    }, 100);
+                }
             });
         </script>
     @endif
+    <nav style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{{ route('user.dashboard') }}">หน้าหลัก</a></li>
+            <li class="breadcrumb-item active" aria-current="page">
+                @if ($type == 1)
+                    โครงการใหญ่ประจำปี
+                @elseif($type == 2)
+                    โครงการสัมนา
+                @elseif($type == 3)
+                    โครงการฝึกอบรม
+                @elseif($type == 4)
+                    โครงการศึกษาดูงาน
+                @elseif($type == 5)
+                    โครงการส่งเสริมศักยภาพ
+                @endif
+            </li>
+        </ol>
+    </nav>
     <div class="project-header">
         <div class="project-title">
             <div class="project-icon">
                 <i class="fas fa-calendar-check"></i>
             </div>
             <span>
-
                 @if ($type == 1)
                     โครงการใหญ่ประจำปี
                 @elseif($type == 2)
@@ -477,7 +512,7 @@
 
             </span>
         </div>
-        <div class="action-buttons">
+        {{-- <div class="action-buttons">
             <button class="btn btn-outline">
                 <i class="fas fa-save"></i> บันทึกร่าง
             </button>
@@ -487,8 +522,9 @@
             <button class="btn btn-success">
                 <i class="fas fa-file-pdf"></i> Export PDF
             </button>
-        </div>
+        </div> --}}
     </div>
+
     <div class="tabs">
         <div class="tab" data-tab="tab-content-1">1. ใบนำส่งโครงการ</div>
         <div class="tab" data-tab="tab-content-2">2. ข้อมูลโครงการ</div>
@@ -499,14 +535,14 @@
 
     <!-- เนื้อหาแท็บที่ 1 -->
     <div class="tab-content" id="tab-content-1">
+
+
         <div class="export-notice">
-            <div class="export-notice-icon">
-                <i class="fas fa-info-circle"></i>
-            </div>
+
             <div class="export-notice-content">
-                <div style="display: flex; justify-content: space-between; align-items: center;">
+                <div style="display: flex; justify-content: space-between; align-items: center; ">
                     <h4><i class="fas fa-file-pdf"></i> Export ข้อมูลใบนำส่งโครงการเป็น PDF</h4>
-                    <a class="btn btn-success" style="padding: 6px 10px; font-size: 0.85rem;"
+                    <a class="btn btn-success" style="padding: 6px 10px; font-size: 0.85rem; margin-left: 10px;"
                         href="{{ route('navigatePage', ['id' => $id, 'type' => $type]) }}" target="_blank">
                         <i class="fas fa-file-pdf"></i> Export
                     </a>
@@ -514,31 +550,65 @@
                 <p>คุณสามารถ Export ข้อมูลที่กรอกในส่วนนี้ เป็นไฟล์ PDF ได้</p>
             </div>
         </div>
-        <form action="{{ route('saveDataPageOnes', ['type' => $type, 'group' => $group]) }}" method="POST">
+        <form action="{{ route('saveDataPageOnes', ['type' => $type, 'id' => $id]) }}" method="POST">
             @csrf
-            <h3 class="section-title">
-                <i class="fas fa-calendar-alt"></i> จำนวนสมาชิกสถาบันฯ ทั้งหมด(คน)
-            </h3>
-            <div class="form-grid">
-                <div class="form-group">
-                    <label for="project-name">จำนวน(คน)</label>
-                    <input type="number" value="{{ $data_value_page_one->count_one ?? '' }}" name="count_one" required
-                        class="form-control" placeholder="ระบุชื่อโครงการ">
-                </div>
 
-            </div>
-            <h3 class="section-title">
-                <i class="fas fa-calendar-alt"></i> เกษตรกรที่ขึ้นทะเบียนกับ กยท. ทั้งหมด(คน)
-            </h3>
-            <div class="form-grid">
-                <div class="form-group">
-                    <label for="project-name">จำนวนคน</label>
-                    <input type="number" value="{{ $data_value_page_one->count_two ?? '' }}" name="count_two" required
-                        class="form-control" placeholder="ระบุชื่อโครงการ">
+            <div>
+                {{-- <h3 class="section-title">
+                    <i class="fas fa-calendar-alt"></i> ข้อมูลจำนวน
+                </h3> --}}
+                <div class="form-grid">
+                    <div>
+                        <h3 class="section-title">
+                            <i class="fas fa-users"></i> จำนวนสมาชิกสถาบันฯ ทั้งหมด(คน)
+                        </h3>
+                        <div class="form-group">
+                            <label for="member-count">จำนวน(คน)</label>
+                            <input type="number" value="{{ $data_value_page_one->count_one ?? '' }}" name="count_one"
+                                class="form-control" placeholder="ระบุจำนวนสมาชิก" min="0">
+                        </div>
+                    </div>
+                    <div>
+                        <h3 class="section-title">
+                            <i class="fas fa-user-check"></i> เกษตรกรที่ขึ้นทะเบียนกับ กยท. ทั้งหมด(คน)
+                        </h3>
+                        <div class="form-group">
+                            <label for="registered-farmers">จำนวน(คน)</label>
+                            <input type="number" value="{{ $data_value_page_one->count_two ?? '' }}" name="count_two"
+                                class="form-control" placeholder="ระบุจำนวนเกษตรกร" min="0">
+                        </div>
+                    </div>
                 </div>
-
             </div>
-            <h3 class="section-title">
+
+            <div>
+                {{-- <h3 class="section-title">
+                    <i class="fas fa-info-circle"></i> ข้อมูลโครงการ
+                </h3> --}}
+                <div class="form-grid">
+                    <div>
+                        <h3 class="section-title">
+                            <i class="far fa-clock"></i> ระยะเวลาในการดำเนินโครงการ
+                        </h3>
+                        <div class="form-group">
+                            <label for="project-duration">ระยะเวลา (วัน)</label>
+                            <input type="text" value="{{ $data_value_page_one->time ?? '' }}" name="time"
+                                class="form-control" placeholder="ระบุระยะเวลา" min="0">
+                        </div>
+                    </div>
+                    <div>
+                        <h3 class="section-title">
+                            <i class="fas fa-money-bill-wave"></i> งบประมาณในการดำเนินโครงการ
+                        </h3>
+                        <div class="form-group">
+                            <label for="project-budget">งบประมาณ (บาท)</label>
+                            <input type="number" value="{{ $data_value_page_one->budget ?? '' }}" name="budget"
+                                class="form-control" placeholder="ระบุงบประมาณ" min="0">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {{-- <h3 class="section-title">
                 <i class="fas fa-calendar-alt"></i> ระยะเวลาในการดำเนินโครงการ
             </h3>
             <div class="form-grid">
@@ -547,8 +617,7 @@
                     <input type="number" value="{{ $data_value_page_one->time ?? '' }}" name="time" required
                         class="form-control" placeholder="ระบุชื่อโครงการ">
                 </div>
-
-            </div>
+            </div> --}}
             <div class="button-group">
                 <button class="btn btn-primary" type="submit">
                     <i class="fas fa-check"></i> บันทึกข้อมูล
@@ -603,16 +672,16 @@
 
     <!-- เนื้อหาแท็บที่ 2 -->
     <div class="tab-content" id="tab-content-2">
-        <h3 class="section-title">
+        {{-- <h3 class="section-title">
             <i class="fas fa-info-circle"></i> ข้อมูลโครงการ
-        </h3>
+        </h3> --}}
         <div class="export-notice">
-            <div class="export-notice-icon">
-                <i class="fas fa-info-circle"></i>
-            </div>
+            {{-- <div class="export-notice-icon">
+                    <i class="fas fa-info-circle"></i>
+                </div> --}}
             <div class="export-notice-content">
                 <h4>คุณสามารถ Export ข้อมูลเป็น PDF ได้</h4>
-                <p>หลังจากที่อัพโหลดเสร็จ กดปุ่ม "Export PDF" ด้านบนขวามือ หรือปุ่มลอยด้านล่างขวา</p>
+                <p>หลังจากที่อัพโหลดเสร็จ </p>
             </div>
         </div>
 
@@ -632,7 +701,10 @@
                     <input type="file" name="upload_file_page_two" id="upload_file_page_two" accept="application/pdf"
                         style="display: none;">
                 </div>
-                <span id="file-name-display">ยังไม่มีไฟล์แนบ</span>
+                <div style="margin-top: 10px; font-weight: bold;">
+                <span id="file-name-display" >ยังไม่มีไฟล์แนบ</span>
+
+                </div>
             </div>
             <div class="action-buttons mt-2" style="display: flex;justify-content: center;gap: 10px;">
                 <button class="btn btn-warning btn-sm" disabled id="save-upload-1" type="submit">
@@ -642,7 +714,8 @@
                     <i class="fas fa-times"></i> ยกเลิก
                 </button>
 
-                @if (isset($data) && $data)
+
+                @if ($hasFile)
                     <a href="{{ route('TwoDownload.pdf', ['id' => $id, 'type' => $type]) }}" class="btn btn-info btn-sm"
                         disabled id="download-file-1">
                         <i class="fas fa-download"></i> ดาวน์โหลด
@@ -659,6 +732,20 @@
                 </button>
             </div>
         </form>
+
+        <script>
+            document.getElementById('download-file-1').addEventListener('click', function(event) {
+                event.preventDefault(); // ป้องกันการเปลี่ยนหน้าแบบปกติ
+                // โค้ด JavaScript สำหรับเปลี่ยนไปที่แท็บ 'tab-2' (แก้ไขตามโครงสร้าง Tab UI ของคุณ)
+                // ตัวอย่างง่ายๆ ถ้าใช้ Hash ใน URL ในการจัดการแท็บ
+                window.location.hash = 'tab-2';
+                // จากนั้นค่อย Redirect ไปยัง URL สำหรับดาวน์โหลด
+                window.location.href = this.getAttribute('href');
+            });
+        </script>
+
+
+
         {{-- ลบข้อมูลmodal --}}
         <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
             aria-labelledby="staticBackdropLabel" aria-hidden="true">
@@ -804,13 +891,11 @@
     <!-- เนื้อหาแท็บที่ 3 -->
     <div class="tab-content" id="tab-content-3">
         <div class="export-notice">
-            <div class="export-notice-icon">
-                <i class="fas fa-info-circle"></i>
-            </div>
+
             <div class="export-notice-content">
                 <div style="display: flex; justify-content: space-between; align-items: center;">
-                    <h4><i class="fas fa-file-pdf"></i> Export ข้อมูลใบนำส่งโครงการเป็น PDF</h4>
-                    <a class="btn btn-success" style="padding: 6px 10px; font-size: 0.85rem;"
+                    <h4><i class="fas fa-file-pdf"></i> Export ข้อมูลแผนการดำเนินงานประจำปีเป็น PDF</h4>
+                    <a class="btn btn-success" style="padding: 6px 10px; font-size: 0.85rem; margin-left: 10px;"
                         href="{{ route('monnyOnePage', ['id' => $id, 'type' => $type]) }}" target="_blank">
                         <i class="fas fa-file-pdf"></i> Export
                     </a>
@@ -819,22 +904,22 @@
             </div>
         </div>
 
-        <form action="{{ route('saveDataPageThrees', ['type' => $type, 'group' => $group]) }}" method="POST">
+        <form action="{{ route('saveDataPageThrees', ['type' => $type, 'id' => $id]) }}" method="POST">
             @csrf
             <h3 class="section-title">
-                <i class="fas fa-calendar-alt"></i> แผนปีที่ผ่านมา
+                <i class="fas fa-chart-bar"></i> แผนปีที่ผ่านมา
             </h3>
             <div class="form-grid">
                 <div class="form-group">
-                    <label for="project-name">เป้าหมาย</label>
+                    <label for="project-name">เป้าหมาย(บาท)</label>
                     <input type="number" name="target_a" value="{{ $data_value_page_three->target_a ?? '' }}"
-                        class="form-control" placeholder="ระบุชื่อโครงการ" required>
+                        class="form-control" placeholder="ระบุเป้าหมาย" min="0">
                 </div>
 
                 <div class="form-group">
-                    <label for="project-year">งบประมาณ</label>
+                    <label for="project-year">งบประมาณ(บาท)</label>
                     <input type="number" name="budget_a" value="{{ $data_value_page_three->budget_a ?? '' }}"
-                        id="project-year" class="form-control" placeholder="ระบุปีงบประมาณ" required>
+                        id="project-year" class="form-control" placeholder="ระบุปีงบประมาณ" min="0">
                 </div>
             </div>
 
@@ -843,45 +928,45 @@
             </h3>
             <div class="form-grid">
                 <div class="form-group">
-                    <label for="project-name">เป้าหมาย</label>
+                    <label for="project-name">เป้าหมาย(บาท)</label>
                     <input type="number" name="target_b" value="{{ $data_value_page_three->target_b ?? '' }}"
-                        class="form-control" placeholder="ระบุชื่อโครงการ" required>
+                        class="form-control" placeholder="ระบุเป้าหมาย" min="0">
                 </div>
 
                 <div class="form-group">
-                    <label for="project-year">งบประมาณ</label>
+                    <label for="project-year">งบประมาณ(บาท)</label>
                     <input type="number" name="budget_b" value="{{ $data_value_page_three->budget_b ?? '' }}"
-                        class="form-control" placeholder="ระบุปีงบประมาณ" required>
+                        class="form-control" placeholder="ระบุงบประมาณ" min="0">
                 </div>
             </div>
             <h3 class="section-title">
-                <i class="fas fa-calendar-alt"></i> คำขอตั้งงบประมาณปีนี้ ๒๕๖๙
+                <i class="fas fa-coins"></i> คำขอตั้งงบประมาณปีนี้ 2568
             </h3>
             <div class="form-grid">
                 <div class="form-group">
-                    <label for="project-name">เป้าหมาย</label>
+                    <label for="project-name">เป้าหมาย(บาท)</label>
                     <input type="number" name="target_c" value="{{ $data_value_page_three->target_c ?? '' }}"
-                        class="form-control" placeholder="ระบุชื่อโครงการ" required>
+                        class="form-control" placeholder="ระบุเป้าหมาย" min="0">
                 </div>
                 <div class="form-group">
-                    <label for="project-year">งบประมาณ</label>
+                    <label for="project-year">งบประมาณ(บาท)</label>
                     <input type="number" name="budget_c" value="{{ $data_value_page_three->budget_c ?? '' }}"
-                        class="form-control" placeholder="ระบุปีงบประมาณ" required>
+                        class="form-control" placeholder="ระบุงบประมาณ" min="">
                 </div>
             </div>
             <h3 class="section-title">
-                <i class="fas fa-calendar-alt"></i> แผนเป้าหมาย/ขอคำตั้งงบประมาณในปี.....2569.....(ถัดไป)
+                <i class="fas fa-clipboard-check"></i> แผนเป้าหมาย/ขอคำตั้งงบประมาณในปี 2569
             </h3>
             <div class="form-grid">
                 <div class="form-group">
-                    <label for="project-name">เป้าหมาย</label>
+                    <label for="project-name">เป้าหมาย(บาท)</label>
                     <input type="number" name="target_d" value="{{ $data_value_page_three->target_d ?? '' }}"
-                        class="form-control" placeholder="ระบุเป้าหมาย" required>
+                        class="form-control" placeholder="ระบุเป้าหมาย" min="0">
                 </div>
                 <div class="form-group">
-                    <label for="project-year">งบประมาณ</label>
+                    <label for="project-year">งบประมาณ(บาท)</label>
                     <input type="number" name="budget_d" value="{{ $data_value_page_three->budget_d ?? '' }}"
-                        class="form-control" placeholder="ระบุปีงบประมาณ" required>
+                        class="form-control" placeholder="ระบุงบประมาณ" min="0">
                 </div>
             </div>
             <div class="button-group">
@@ -895,13 +980,13 @@
     <!-- เนื้อหาแท็บที่ 4 -->
     <div class="tab-content" id="tab-content-4">
         <div class="export-notice">
-            <div class="export-notice-icon">
+            {{-- <div class="export-notice-icon">
                 <i class="fas fa-info-circle"></i>
-            </div>
+            </div> --}}
             <div class="export-notice-content">
                 <div style="display: flex; justify-content: space-between; align-items: center;">
-                    <h4><i class="fas fa-file-pdf"></i> Export ข้อมูลใบนำส่งโครงการเป็น PDF</h4>
-                    <a class="btn btn-success" style="padding: 6px 10px; font-size: 0.85rem;"
+                    <h4><i class="fas fa-file-pdf"></i> Export ข้อมูลแผนงานค่าใช้จ่ายประจำปีเป็น PDF</h4>
+                    <a class="btn btn-success" style="padding: 6px 10px; font-size: 0.85rem; margin-left: 10px;"
                         href="{{ route('monnyTwoPage', ['id' => $id, 'type' => $type]) }}" target="_blank">
                         <i class="fas fa-file-pdf"></i> Export
                     </a>
@@ -910,38 +995,38 @@
             </div>
         </div>
         <h3 class="section-title">
-            <i class="fas fa-calendar-alt"></i> ค่าใช้จ่ายในปีที่ผ่านมา.....๒๕๖๙
+            <i class="fas fa-wallet"></i> ค่าใช้จ่ายในปีที่ผ่านมา.....2568
         </h3>
-        <form action="{{ route('saveDataPageFours', ['type' => $type, 'group' => $group]) }}" method="POST">
+        <form action="{{ route('saveDataPageFours', ['type' => $type, 'id' => $id]) }}" method="POST">
             @csrf
             <div style="display: grid;
             grid-template-columns: repeat(3, 1fr);
             gap: 20px;">
                 <div class="form-group">
-                    <label for="project-name">งบประมาณ</label>
+                    <label for="project-name">งบประมาณ(บาท)</label>
                     <input type="number" name="bugget" value="{{ $data_value_page_four->bugget ?? '' }}"
-                        class="form-control" placeholder="ระบุชื่อโครงการ" required>
+                        class="form-control" placeholder="ระบุงบประมาณ" min="0">
                 </div>
                 <div class="form-group">
-                    <label for="project-year">ผลการใชเจ่าย</label>
+                    <label for="project-year">ผลการใช้จ่าย(บาท)</label>
                     <input type="number" name="actual_spent" value="{{ $data_value_page_four->actual_spent ?? '' }}"
-                        class="form-control" placeholder="ระบุปีงบประมาณ" required>
+                        class="form-control" placeholder="ระบุผลการใช้จ่าย" min="0">
                 </div>
                 <div class="form-group">
                     <label for="project-year">ร้อยละ</label>
                     <input type="number" name="percentage" value="{{ $data_value_page_four->percentage ?? '' }}"
-                        class="form-control" placeholder="ระบุปีงบประมาณ" required>
+                        class="form-control" placeholder="ระบุร้อยละ" min="0">
                 </div>
             </div>
 
             <h3 class="section-title">
-                <i class="fas fa-calendar-alt"></i> งบประมาณในปี...2569...(ถัไป)
+                <i class="fas fa-clipboard-check"></i> แผนเป้าหมาย/ขอคำตั้งงบประมาณในปี 2569
             </h3>
             <div style="display: grid;
             grid-template-columns: repeat(3, 1fr);
             gap: 20px;">
                 <div class="form-group">
-                    <label for="project-name">งบประมาณ</label>
+                    <label for="project-name">งบประมาณ(บาท)</label>
                     <input type="number" name="next_year_budget"
                         value="{{ $data_value_page_four->next_year_budget ?? '' }}" class="form-control"
                         placeholder="ระบุชื่อโครงการ" required>
@@ -965,40 +1050,59 @@
             const tabIndicator = document.querySelector('.tab-indicator');
             const tabContents = document.querySelectorAll('.tab-content');
 
-            // รับค่า activeTab ที่ส่งมาจาก Controller
-            const activeTabFromController = "{{ $activeTab }}";
+            // ตรวจสอบค่า session ที่ส่งมา
+            const activeTabFromSession = "{{ session('activeTab') }}";
+            console.log('Active Tab จาก Session:', activeTabFromSession);
 
             // ฟังก์ชันสำหรับ Active Tab
             function activateTab(tabId) {
+                console.log('Activating tab:', tabId);
+
+                // ลบ active class จากทุก tab และ content
                 tabs.forEach(tab => tab.classList.remove('active'));
                 tabContents.forEach(content => content.classList.remove('active'));
 
+                // เลือก tab และ content ตาม ID
                 const targetTab = document.querySelector(`.tab[data-tab="${tabId}"]`);
                 const targetContent = document.getElementById(tabId);
 
+                console.log('Target tab element:', targetTab);
+                console.log('Target content element:', targetContent);
+
                 if (targetTab && targetContent) {
+                    // เพิ่ม active class
                     targetTab.classList.add('active');
                     targetContent.classList.add('active');
 
+                    // ปรับตำแหน่ง indicator
                     if (tabIndicator) {
                         tabIndicator.style.left = targetTab.offsetLeft + 'px';
                         tabIndicator.style.width = targetTab.offsetWidth + 'px';
                     }
+                } else {
+                    console.error('Tab not found with ID:', tabId);
                 }
             }
 
-            // Active Tab ตามค่าที่ส่งมาจาก Controller ตอนโหลดหน้า
-            if (activeTabFromController) {
-                activateTab(activeTabFromController);
+            // ตัวตรวจสอบค่าที่ละเอียดขึ้น
+            if (activeTabFromSession && activeTabFromSession.trim() !== '') {
+                console.log('Found active tab from session:', activeTabFromSession);
+                // แทนที่จะเรียกฟังก์ชันทันที ให้ใช้ setTimeout เพื่อให้แน่ใจว่า DOM โหลดเสร็จแล้ว
+                setTimeout(() => {
+                    activateTab(activeTabFromSession);
+                }, 100);
             } else {
-                // ถ้าไม่มีค่าจาก Controller (เช่น โหลดหน้าครั้งแรก) ให้ Active Tab แรกเป็นค่าเริ่มต้น
+                console.log('No active tab from session, using default');
+                // ใช้ tab แรก
                 activateTab(tabs[0].getAttribute('data-tab'));
             }
 
-            // Event Listener สำหรับการคลิกแท็บ (เหมือนเดิม)
+            // เพิ่ม event listener สำหรับการคลิก tab
             tabs.forEach(tab => {
                 tab.addEventListener('click', function() {
-                    activateTab(this.getAttribute('data-tab'));
+                    const tabId = this.getAttribute('data-tab');
+                    console.log('Tab clicked:', tabId);
+                    activateTab(tabId);
                 });
             });
         });

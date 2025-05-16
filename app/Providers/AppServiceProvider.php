@@ -10,6 +10,7 @@ use App\Http\Responses\RegisterResponse as CustomRegisterResponse;
 use App\Models\User;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\Facades\Auth;
+
 class AppServiceProvider extends ServiceProvider
 {
     /**
@@ -20,7 +21,6 @@ class AppServiceProvider extends ServiceProvider
         //
         $this->app->singleton(LoginResponse::class, CustomLoginResponse::class);
         $this->app->singleton(RegisterResponse::class, CustomRegisterResponse::class);
-
     }
 
     /**
@@ -28,16 +28,35 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        //
-        View::composer('*', function ($view) {
-        if (Auth::check()) {
-            $user = Auth::user();
-            // ดึงข้อมูลกลุ่มของผู้ใช้ (ปรับตาม Logic ของคุณ)
-            $foundGroup = User::where('id', $user->id)->first(); // ตัวอย่าง
-            View::share('foundGroup', $foundGroup);
-        } else {
-            View::share('foundGroup', null); // หรือค่าเริ่มต้นอื่น ๆ
-        }
-    });
+       View::composer('*', function ($view) {
+    if (Auth::check()) {
+        $userGroup = Auth::user()->group;
+
+        $groupList = [
+            0 => 'แอดมินเพจ' , 
+            1 => 'สหกรณ์นิคมดงมูลหนึ่ง จำกัด',
+            2 => 'สหกรณ์นิคมดงมูลสอง จำกัด',
+            3 => 'สหกรณ์กองทุนสวนยางขอนแก่น จำกัด',
+            4 => 'กลุ่มเกษตรกรผู้ปลูกสวนยางพาราตำบลโนนทอง',
+            5 => 'กลุ่มเกษตรกรทำสวนยางพาราอำเภอสีชมพู',
+            6 => 'กลุ่มเกษตรกรชาวสวนยางพาราเวียงเก่า',
+            7 => 'กลุ่มเกษตรกรเครือข่ายยางพาราอำเภอกระนวน',
+            8 => 'กลุ่มเกษตรกรเครือข่ายสวนยางพาราอำเภอน้ำพอง',
+            9 => 'กลุ่มเกษตรกรชาวสวนยางบ้านแฮด',
+            10 => 'กลุ่มเกษตรกรเครือข่ายยางพาราอำเภออุบลรัตน์',
+            11 => 'กลุ่มเกษตรกรชาวสวนยางพาราซำสูง',
+            12 => 'กลุ่มเกษตรกรผู้ปลูกยางพาราตำบลดอนช้าง',
+            13 => 'กลุ่มเกษตรกรชาวสวนยางตำบลโนนท่อน',
+            14 => 'กลุ่มเกษตรกรชาวสวนยางพาราอำเภอเขาสวนกวาง',
+            15 => 'กลุ่มเกษตรกรผู้ปลูกยางพาราอำเภอภูผาม่าน',
+        ];
+
+        $groupName = $groupList[$userGroup] ?? 'ไม่ทราบชื่อกลุ่ม'; // ถ้าไม่พบ group
+
+        View::share('groupName', $groupName);
+    } else {
+        View::share('groupName', null);
+    }
+});
     }
 }

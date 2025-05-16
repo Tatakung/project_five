@@ -158,7 +158,7 @@
         <p style="margin-top: 5px;  text-align: center ;">
             ลงชื่อ....................................................ผู้เสนอโครงการ
         </p>
-        <p style="text-align: center ; margin-top: -27px;">({{$data_post->prefix ?? ''}}{{$data_post->first_name ?? ''}} {{$data_post->last_name ?? ''}})</p>
+        <p style="text-align: center ; margin-top: -27px;">({{$data_post->prefix ?? '.......................'}}{{$data_post->first_name ?? '.......................'}} {{$data_post->last_name ?? ''}})</p>
         <p style=" margin-top: -27px ; text-align: center ;">ตำแหน่ง ประธาน{{$foundGroup['name'] ?? ''}}</p>
         <p style="text-align: center ; margin-top: -27px;">........./........./.........</p>
     </div>

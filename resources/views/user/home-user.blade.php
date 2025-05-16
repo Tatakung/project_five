@@ -131,13 +131,13 @@
         }
 
         .status-done {
-            background-color: #a7f3d0;
-            color: #1a7e50;
+            background-color: #dfbdf5;
+            color: #0a3181;
         }
 
         .status-pending {
-            background-color: #fefcbf;
-            color: #92400e;
+            background-color: #cbf1d7;
+            color: #723b19;
         }
 
         .action-buttons {
@@ -272,7 +272,6 @@
 
     <h2 class="section-title" style="font-size: 20px;"><i class="fa-solid fa-folder-open"></i> ประเภทโครงการ</h2>
     <div class="project-cards">
-
         <a href="{{ route('projectOneRegion', ['id' => $user, 'type' => 1]) }}"
             style="text-decoration: none; color: inherit;">
             <div class="card">
@@ -281,6 +280,7 @@
                 </div>
                 <h3>โครงการใหญ่ประจำปี</h3>
                 <p>จัดการข้อมูลโครงการหลักประจำปี</p>
+
 
             </div>
         </a>
@@ -341,11 +341,11 @@
 
 
     </div>
-    <h2 class="section-title"><i class="fa-solid fa-list-check"></i> เอกสารที่สามารถพิมพ์ได้</h2>
+    <h2 class="section-title" style="font-size: 20px;"><i class="fa-solid fa-list-check"></i> เอกสารที่สามารถพิมพ์ได้</h2>
     <div class="documents-section">
-        <div class="documents-header">
+        {{-- <div class="documents-header">
             <h3>รายการเอกสาร</h3>
-        </div>
+        </div> --}}
         <table class="documents-table">
             <thead>
                 <tr>
@@ -358,7 +358,7 @@
             </thead>
             <tbody>
                 <tr>
-                    <td data-label="ชื่อเอกสาร"><i class="fa-solid fa-file-pdf"></i> ขอรับเงินสนับสนุน</td>
+                    <td data-label="ชื่อเอกสาร"><i class="fa-solid fa-file-pdf"></i> ใบขอรับเงินสนับสนุน</td>
                     {{-- <td data-label="ขนาดไฟล์">user_id,1</td>
                     <td data-label="วันที่อัปโหลด">05/08/2025</td>
                     <td data-label="สถานะ"><span class="status status-done">อัปโหลดแล้ว</span></td> --}}
@@ -366,53 +366,54 @@
                         <div class="action-buttons">
                             <a class="btn-icon btn-view" href="{{ route('showtypepdfone', ['id' => $user]) }}"><i
                                     class="fas fa-eye"></i></a>
-                            <button class="btn-icon btn-print"><i class="fas fa-print"></i></button>
+                            {{-- <button class="btn-icon btn-print"><i class="fas fa-print"></i></button> --}}
                         </div>
                     </td>
                 </tr>
                 <tr>
 
-                    <td data-label="ชื่อเอกสาร"><i class="fa-solid fa-file-pdf"></i> งสบ.๑</td>
+                    <td data-label="ชื่อเอกสาร"><i class="fa-solid fa-file-pdf"></i> ใบงสบ.๑</td>
                     {{-- <td data-label="ขนาดไฟล์">user_id,1</td>
                     <td data-label="วันที่อัปโหลด">05/08/2025</td>
                     <td data-label="สถานะ"><span class="status status-done">อัปโหลดแล้ว</span></td> --}}
                     <td data-label="จัดการ">
                         <div class="action-buttons">
-                            <a class="btn-icon btn-view" href="{{ route('ngbOne') }}"><i class="fas fa-eye"></i></a>
-                            <button class="btn-icon btn-print"><i class="fas fa-print"></i></button>
+                            {{-- <a class="btn-icon btn-view" href="{{ route('ngbOne') }}"><i class="fas fa-eye"></i></a>
+                            <button class="btn-icon btn-print"><i class="fas fa-print"></i></button> --}}
+                            <a class="btn-icon btn-view" href="{{ route('histofer', ['id' => $user]) }}"><i
+                                    class="fas fa-eye"></i></a>
+                            {{-- <button class="btn-icon btn-print"><i class="fas fa-print"></i></button> --}}
+
                         </div>
                     </td>
                 </tr>
                 <tr>
-                    <td data-label="ชื่อเอกสาร"><i class="fa-solid fa-file-pdf"></i> งสบ. ๓</td>
+                    <td data-label="ชื่อเอกสาร"><i class="fa-solid fa-file-pdf"></i> ใบงสบ.๓</td>
                     <td data-label="จัดการ">
                         <div class="action-buttons">
                             <a class="btn-icon btn-view" href="{{ route('ngbThree', ['id' => $user]) }}"><i
                                     class="fas fa-eye"></i></a>
-                            <button class="btn-icon btn-print"><i class="fas fa-print"></i></button>
+                            {{-- <button class="btn-icon btn-print"><i class="fas fa-print"></i></button> --}}
                         </div>
                     </td>
                 </tr>
 
 
                 <tr>
-                    <td data-label="ชื่อเอกสาร"><i class="fa-solid fa-file-pdf"></i> รายชื่อคณะกรรมการ </td>
+                    <td data-label="ชื่อเอกสาร"><i class="fa-solid fa-file-pdf"></i> รายชื่อคณะกรรมการ{{$groupName}} </td>
                     <td data-label="จัดการ">
                         <div class="action-buttons">
                             <a class="btn-icon btn-view" href="{{ route('showtboard', ['id' => $user]) }}"><i
                                     class="fas fa-eye"></i></a>
-                            <button class="btn-icon btn-print"><i class="fas fa-print"></i></button>
+                            {{-- <button class="btn-icon btn-print"><i class="fas fa-print"></i></button> --}}
                         </div>
                     </td>
                 </tr>
-
-
-
                 <!-- รายการเอกสารอื่น ๆ -->
             </tbody>
         </table>
     </div>
-    <h2 class="section-title"><i class="fa-solid fa-list-check"></i> เอกสารสำหรับแนบ</h2>
+    <h2 class="section-title" style="font-size: 20px;"><i class="fa-solid fa-list-check"></i> เอกสารสำหรับแนบไฟล์</h2>
     <div class="documents-section">
         <table class="documents-table">
             <thead>
@@ -454,7 +455,7 @@
                             <a class="btn-icon btn-view"
                                 href="{{ route('upload-file.create', ['user' => $user, 'type' => 1]) }}"><i
                                     class="fas fa-eye"></i></a>
-                            <button class="btn-icon btn-print"><i class="fas fa-print"></i></button>
+                            {{-- <button class="btn-icon btn-print"><i class="fas fa-print"></i></button> --}}
                         </div>
                     </td>
                 </tr>
@@ -477,7 +478,7 @@
                             <a class="btn-icon btn-view"
                                 href="{{ route('upload-file.create', ['user' => $user, 'type' => 2]) }}"><i
                                     class="fas fa-eye"></i></a>
-                            <button class="btn-icon btn-print"><i class="fas fa-print"></i></button>
+                            {{-- <button class="btn-icon btn-print"><i class="fas fa-print"></i></button> --}}
                         </div>
                     </td>
                 </tr>
@@ -499,7 +500,7 @@
                             <a class="btn-icon btn-view"
                                 href="{{ route('upload-file.create', ['user' => $user, 'type' => 3]) }}"><i
                                     class="fas fa-eye"></i></a>
-                            <button class="btn-icon btn-print"><i class="fas fa-print"></i></button>
+                            {{-- <button class="btn-icon btn-print"><i class="fas fa-print"></i></button> --}}
                         </div>
                     </td>
                 </tr>

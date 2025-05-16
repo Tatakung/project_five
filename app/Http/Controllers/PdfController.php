@@ -7,8 +7,10 @@ use App\Models\Board;
 use App\Models\Delivery;
 use App\Models\Spending;
 use App\Models\User;
+use App\Models\UserAddress;
 use Illuminate\Http\Request;
 use Barryvdh\DomPDF\Facade\Pdf;
+use Illuminate\Support\Facades\Crypt;
 
 class PdfController extends Controller
 {
@@ -39,6 +41,15 @@ class PdfController extends Controller
     public function showtypepdfone($id)
     {
 
+        $is_login = auth()->user();
+        $targetUser = User::findOrFail($id);
+
+        // ถ้าไม่ใช่แอดมิน และกลุ่มไม่ตรงกัน
+        if ($is_login->group !== 0 && $is_login->group !== $targetUser->group) {
+            abort(403, 'ไม่มีสิทธิ์ในหน้านี้');
+        }
+
+
         $user = User::find($id);
         if (auth()->id() !== $id) {
             abort(404, 'เกิดข้อผิดพลาด');
@@ -53,14 +64,26 @@ class PdfController extends Controller
             }
         }
         if (!$foundGroup) {
-            abort(404, 'ไม่พบกลุ่มที่ตรงกับ Type ที่ระบุ');
+            abort(404, 'Server Error');
         }
 
-        $pdf = Pdf::loadView('pdf.level-pdf-one',compact('foundGroup'));
+        $pdf = Pdf::loadView('pdf.level-pdf-one', compact('foundGroup'));
         return $pdf->stream('preview.pdf');
     }
     public function showtboard($id)
     {
+
+
+        $is_login = auth()->user();
+        $targetUser = User::findOrFail($id);
+
+        // ถ้าไม่ใช่แอดมิน และกลุ่มไม่ตรงกัน
+        if ($is_login->group !== 0 && $is_login->group !== $targetUser->group) {
+            abort(403, 'ไม่มีสิทธิ์ในหน้านี้');
+        }
+
+
+
         $user = User::where('id', $id)->first();
         $typeInt = (int) $user->group;
         $groups = $this->getGroups();
@@ -80,13 +103,98 @@ class PdfController extends Controller
     }
 
 
-    public function ngbOne()
+    public function ngbOne(Request $request, $id)
     {
-        $pdf = Pdf::loadView('pdf.ngb-one');
+        $is_login = auth()->user();
+        $targetUser = User::findOrFail($id);
+        // ถ้าไม่ใช่แอดมิน และกลุ่มไม่ตรงกัน
+        if ($is_login->group !== 0 && $is_login->group !== $targetUser->group) {
+            abort(403, 'ไม่มีสิทธิ์ในหน้านี้');
+        }
+        $user = User::where('id', $id)->first();
+        // รับค่าจาก input ที่ชื่อ 'items' ถ้าไม่มีให้เป็น array เปล่า
+        $items = $request->input('items', []);
+
+        // แปลงค่าทั้งหมดให้เป็น integer
+        $list = array_map('intval', $items);
+
+
+
+
+        $address = UserAddress::where('user_id', $user->id)->first();
+
+        if ($address) {
+            // ถอดรหัสข้อมูลที่เก็บแบบเข้ารหัสไว้
+            $address->id_card_encrypted = $this->safeDecrypt($address->id_card_encrypted);
+            $address->house_no_encrypted = $this->safeDecrypt($address->house_no_encrypted);
+            $address->village_no_encrypted = $this->safeDecrypt($address->village_no_encrypted);
+            $address->subdistrict_encrypted = $this->safeDecrypt($address->subdistrict_encrypted);
+            $address->district_encrypted = $this->safeDecrypt($address->district_encrypted);
+            $address->province_encrypted = $this->safeDecrypt($address->province_encrypted);
+        }
+
+        $data_post = null;
+        $board = Board::where('user_id', $user->id)->get();
+        if ($board->isNotEmpty()) {
+            foreach ($board as $item) {
+                if ($item->position === 'ประธานกรรมการ') {
+                    $data_post = Board::where('id', $item->id)->first();
+                }
+            }
+        }
+        $typeInt = (int) $user->group;
+        $groups = $this->getGroups();
+        $foundGroup = null; // ตัวแปรสำหรับเก็บข้อมูลกลุ่มที่พบ
+        foreach ($groups as $groupData) {
+            if ($groupData['group'] === $typeInt) {
+                $foundGroup = $groupData; // เก็บข้อมูลกลุ่มที่ตรงกัน
+                break;
+            }
+        }
+        if (!$foundGroup) {
+            abort(404, 'ไม่พบกลุ่มที่ตรงกับ Type ที่ระบุ');
+        }
+        // $budget
+        $b1 = Delivery::where('user_id', $user->id)->where('type', 1)->value('budget');
+        $b2 = Delivery::where('user_id', $user->id)->where('type', 2)->value('budget');
+        $b3 = Delivery::where('user_id', $user->id)->where('type', 3)->value('budget');
+        $b4 = Delivery::where('user_id', $user->id)->where('type', 4)->value('budget');
+        $b5 = Delivery::where('user_id', $user->id)->where('type', 5)->value('budget');
+
+        $budgets = Delivery::where('user_id', $user->id)
+            ->whereIn('type', $list)
+            ->pluck('budget', 'type'); // ได้เป็น [1 => 1000, 2 => 2000]
+        $budgets = Delivery::where('user_id', $user->id)
+            ->whereIn('type', $list)
+            ->pluck('budget', 'type'); // ได้เป็น [1 => 1000, 2 => 2000]
+
+        $total = 0;
+        foreach ($list as $type) {
+            $total += $budgets[$type] ?? 0; // ถ้าไม่มี type นั้น ให้บวก 0
+        }
+        $pdf = Pdf::loadView('pdf.ngb-one', compact('foundGroup', 'data_post', 'address', 'list', 'b1', 'b2', 'b3', 'b4', 'b5','total'));
         return $pdf->stream('ngb-one.pdf');
+    }
+    private function safeDecrypt($value)
+    {
+        if (!$value || trim($value) === '') {
+            return null;
+        }
+        try {
+            return Crypt::decryptString($value);
+        } catch (\Exception $e) {
+            // ถอดรหัสไม่ได้ ให้คืนค่า null หรือข้อความแจ้งเตือน
+            return null;
+        }
     }
     public function ngbThree($id)
     {
+        $is_login = auth()->user();
+        $targetUser = User::findOrFail($id);
+        // ถ้าไม่ใช่แอดมิน และกลุ่มไม่ตรงกัน
+        if ($is_login->group !== 0 && $is_login->group !== $targetUser->group) {
+            abort(403, 'ไม่มีสิทธิ์ในหน้านี้');
+        }
         $user = User::where('id', $id)->first();
         $data_post = null;
         $board = Board::where('user_id', $user->id)->get();
@@ -115,10 +223,22 @@ class PdfController extends Controller
     }
     public function navigatePage($id, $type)
     {
-        $user = User::find($id);
-        if (auth()->id() !== $id) {
-            abort(404, 'เกิดข้อผิดพลาด');
+
+        // เช้็คเข้าสู่ระบบหรือยัง
+        if (!auth()->user()) {
+            abort(403, 'ไม่มีสิทธิเข้าถึง');
         }
+
+        $is_login = auth()->user(); //ใช้งาน
+        $targetUser = User::findOrFail($id); //lส่งมา
+
+        // ถ้าไม่ใช่แอดมิน และกลุ่มไม่ตรงกัน
+        if ($is_login->group !== 0 && $is_login->group !== $targetUser->group) {
+            abort(403, 'ไม่มีสิทธิ์ในหน้านี้');
+        }
+
+        $user = User::find($id); //รอคอมเม้นออกนะ 
+
         $typeInt = (int) $user->group;
         $groups = $this->getGroups();
         $foundGroup = null; // ตัวแปรสำหรับเก็บข้อมูลกลุ่มที่พบ
@@ -150,10 +270,15 @@ class PdfController extends Controller
     }
     public function monnyOnePage($id, $type)
     {
-        $user = User::find($id);
-        if (auth()->id() !== $id) {
-            abort(404, 'เกิดข้อผิดพลาด');
+        $is_login = auth()->user();
+        $targetUser = User::findOrFail($id);
+
+        // ถ้าไม่ใช่แอดมิน และกลุ่มไม่ตรงกัน
+        if ($is_login->group !== 0 && $is_login->group !== $targetUser->group) {
+            abort(403, 'ไม่มีสิทธิ์ในหน้านี้');
         }
+
+        $user = User::find($id);
         $typeInt = (int) $user->group;
         $groups = $this->getGroups();
         $foundGroup = null; // ตัวแปรสำหรับเก็บข้อมูลกลุ่มที่พบ
@@ -186,10 +311,19 @@ class PdfController extends Controller
     }
     public function monnyTwoPage($id, $type)
     {
-        $user = User::find($id);
-        if (auth()->id() !== $id) {
-            abort(404, 'เกิดข้อผิดพลาด');
+
+        $is_login = auth()->user();
+        $targetUser = User::findOrFail($id);
+
+        // ถ้าไม่ใช่แอดมิน และกลุ่มไม่ตรงกัน
+        if ($is_login->group !== 0 && $is_login->group !== $targetUser->group) {
+            abort(403, 'ไม่มีสิทธิ์ในหน้านี้');
         }
+
+
+
+
+        $user = User::find($id);
         $typeInt = (int) $user->group;
         $groups = $this->getGroups();
         $foundGroup = null; // ตัวแปรสำหรับเก็บข้อมูลกลุ่มที่พบ
